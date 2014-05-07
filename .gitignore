@@ -1,0 +1,6 @@
+/Debug/*.tlog
+/Debug/*.log
+/Debug/*.cache
+/Debug/*.obj
+/Debug/*.pdb
+/*.orig
