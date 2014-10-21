@@ -35,13 +35,9 @@ void toQVariant ( CXProp* prop, QVariant& var )
     case eType_Enum:
     {
         CXPropEnum* pEnum = ( CXPropEnum* ) prop;
-        const GStringArr& gStrList = pEnum->getStringList();
-        QStringList qStrList;
-for ( const GString & str: gStrList )
-        {
-            qStrList.push_back ( str.c_str() );
-        }
-        var = qStrList;
+        int idx = pEnum->getIndex();
+        const CXDynaArray<CXEnumStruct>& gStrList = pEnum->getStringList();
+        var = gStrList[idx].mName;
     }
     break;
     default:
@@ -66,6 +62,7 @@ EPropertySheet::EPropertySheet ( QWidget* parent/*=0*/ )
     mTreeView->setModel ( mTreeModel );
     //mTreeView->setGeometry(parent->childrenRect());
     mTreeView->setWindowTitle ( "Simple Tree Model" );
+
 
     mDelegate = new EPropertySheetDelegate;
     mTreeView->setItemDelegate ( mDelegate );

@@ -72,12 +72,13 @@ QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
 
     QStandardItemModel* mymode = ( QStandardItemModel* ) ( index.model() );
     EPropertySheetTreeItem* item = dynamic_cast<EPropertySheetTreeItem*> ( mymode->itemFromIndex ( index ) );
-	EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
+    EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
+    CXProp* propBase = propVar->mProp;
 
     QWidget* widget = 0;
-    switch ( var.type() )
+    switch ( propBase->getType() )
     {
-    case QMetaType::Int:
+    case eType_Int:
     {
         QSpinBox *editor = new QSpinBox ( parent );
         editor->setMaximum ( INT_MAX );
@@ -85,20 +86,36 @@ QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
         widget = editor;
     }
     break;
-    case QMetaType::Bool:
+    case eType_Bool:
     {
         QCheckBox *editor = new QCheckBox ( parent );
         editor->setCheckState ( var.toBool() ? Qt::Checked : Qt::Unchecked );
         widget = editor;
     }
     break;
-    case QMetaType::QString:
+    case eType_String:
     {
         QLineEdit *editor = new QLineEdit ( parent );
         widget = editor;
     }
     break;
-    case QMetaType::Double:
+    case eType_Enum:
+    {
+        QComboBox *editor = new QComboBox ( parent );
+        editor->setFrame ( true );
+        CXPropEnum* propEnum = ( CXPropEnum* ) propVar->mProp;
+        QStringList qstrList;
+for ( auto & s: propEnum->getStringList() )
+            qstrList.push_back ( s.mName );
+        editor->addItems ( qstrList );
+        int var = 0;
+        dCast ( var, propEnum->mVar );
+        int idx = propEnum->getIndex ( var );
+        editor->setCurrentIndex ( idx );
+        widget = editor;
+    }
+    break;
+    case eType_Float:
     {
         QDoubleSpinBox *editor = new QDoubleSpinBox ( parent );
         editor->setMaximum ( DOUBLE_MAX );
@@ -106,23 +123,12 @@ QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
         widget = editor;
     }
     break;
-    case QMetaType::Float:
+    case eType_Double:
     {
         QDoubleSpinBox *editor = new QDoubleSpinBox ( parent );
         editor->setMaximum ( DOUBLE_MAX );
         editor->setMinimum ( DOUBLE_MIN );
         widget = editor;
-    }
-    break;
-    case QMetaType::QStringList:
-    {
-		QComboBox *editor = new QComboBox ( parent );
-		editor->setFrame(true);
-		editor->addItems ( var.toStringList() );
-		int idx = 0;
-		dCast ( idx, propVar->mPtr );
-		editor->setCurrentIndex ( idx );
-		widget = editor;
     }
     break;
     }
@@ -137,10 +143,14 @@ void EPropertySheetDelegate::setEditorData ( QWidget *editor,
 {
     //int value = index.model()->data(index, Qt::EditRole).toInt();
     QVariant var = index.model()->data ( index, Qt::EditRole );
+    QStandardItemModel* mymode = ( QStandardItemModel* ) ( index.model() );
+    EPropertySheetTreeItem* item = dynamic_cast<EPropertySheetTreeItem*> ( mymode->itemFromIndex ( index ) );
+    EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
+    CXProp* propBase = propVar->mProp;
 
-    switch ( var.type() )
+    switch ( propBase->getType() )
     {
-    case QMetaType::Int:
+    case eType_Int:
     {
         QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
         curEditor->setMinimum ( 0 );
@@ -148,39 +158,46 @@ void EPropertySheetDelegate::setEditorData ( QWidget *editor,
         curEditor->setValue ( var.toInt() );
     }
     break;
-    case QMetaType::Bool:
+    case eType_Bool:
     {
         QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
         curEditor->setCheckState ( var.toBool() ? Qt::Checked : Qt::Unchecked );
     }
     break;
-    case QMetaType::QString:
+    case eType_String:
     {
         QLineEdit *curEditor = static_cast<QLineEdit*> ( editor );
         curEditor->setText ( var.toString() );
     }
     break;
-    case QMetaType::Double:
+    case eType_Double:
     {
         QDoubleSpinBox *curEditor = static_cast<QDoubleSpinBox*> ( editor );
         curEditor->setValue ( var.toFloat() );
     }
     break;
-    case QMetaType::Float:
+    case eType_Float:
     {
         QDoubleSpinBox *curEditor = static_cast<QDoubleSpinBox*> ( editor );
         curEditor->setValue ( var.toFloat() );
     }
     break;
-    case QMetaType::QStringList:
+    case eType_Enum:
     {
-		//QToolButton *curEditor = static_cast<QComboBox*> ( editor );
-        //curEditor->clear();
-        //curEditor->addItems ( var.toStringList() );
-        //curEditor->setCurrentText() ( var.toStringList() );
+        //QComboBox *curEditor = static_cast<QComboBox*> ( editor );
+
     }
     break;
+    //  case QMetaType::QStringList:
+    //  {
+    ////QToolButton *curEditor = static_cast<QComboBox*> ( editor );
+    //      //curEditor->clear();
+    //      //curEditor->addItems ( var.toStringList() );
+    //      //curEditor->setCurrentText() ( var.toStringList() );
+    //  }
+    //  break;
     }
+    //this->setEditorData(editor,index);
 
     //QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
     //spinBox->setValue(value);
@@ -193,14 +210,14 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
 {
     QVariant var = index.model()->data ( index, Qt::EditRole );
 
-    QStandardItemModel* mymode = static_cast<QStandardItemModel*> ( model );
+    QStandardItemModel* mymode = ( QStandardItemModel* ) ( index.model() );
     EPropertySheetTreeItem* item = dynamic_cast<EPropertySheetTreeItem*> ( mymode->itemFromIndex ( index ) );
-
     EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
-    CXASSERT ( propVar );
-    switch ( var.type() )
+    CXProp* propBase = propVar->mProp;
+
+    switch ( propBase->getType() )
     {
-    case QMetaType::Int:
+    case eType_Int:
     {
         QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
         int prop = curEditor->value();
@@ -210,7 +227,7 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
-    case QMetaType::Bool:
+    case eType_Bool:
     {
         QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
         bool prop = curEditor->checkState() == Qt::Checked ? true : false;
@@ -220,7 +237,7 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
-    case QMetaType::QString:
+    case eType_String:
     {
         QLineEdit *curEditor = static_cast<QLineEdit*> ( editor );
         GString prop = curEditor->text().toStdString();
@@ -230,7 +247,7 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
-    case QMetaType::Double:
+    case eType_Double:
     {
         QDoubleSpinBox *curEditor = static_cast<QDoubleSpinBox*> ( editor );
         double prop = ( double ) curEditor->value();
@@ -240,7 +257,7 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
-    case QMetaType::Float:
+    case eType_Float:
     {
         QDoubleSpinBox *curEditor = static_cast<QDoubleSpinBox*> ( editor );
         float prop = ( float ) curEditor->value();
@@ -250,10 +267,13 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
-    case QMetaType::QStringList:
+    case eType_Enum:
     {
-		QComboBox *curEditor = static_cast<QComboBox*> ( editor );
-        int prop =  curEditor->currentIndex();
+        QComboBox *curEditor = static_cast<QComboBox*> ( editor );
+		int idx=curEditor->currentIndex();
+		CXPropEnum* pEnum=(CXPropEnum*)propBase;
+		int prop = pEnum->getValue(idx); 
+		model->setData ( index, curEditor->currentText(), Qt::EditRole );
         EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
