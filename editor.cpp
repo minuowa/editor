@@ -1,19 +1,21 @@
 #include "editor.h"
 #include "QMenu.h"
 #include "QMenubar.h"
-#include "..\src\gui\widgets\qdockwidget.h"
+#include "qdockwidget.h"
 #include "Editorapp.h"
-#include "..\src\gui\dialogs\qfiledialog.h"
+#include "qfiledialog.h"
 #include "EObjectListSheet.h"
-#define MyApp ((EditorApp*)qApp)
-#include "EEditorSheetManager.h"
-
-Editor::Editor ( QWidget *parent, Qt::WFlags flags )
+#include "EEditorManager.h"
+#include "ui_mainwindow.h"
+#include "qevent.h"
+#include "EScenePanel.h"
+Editor::Editor ( QWidget *parent, Qt::WindowType flags )
     : QMainWindow ( parent, flags )
     , mIdleTimeID ( 0 )
+    , ui ( new Ui::MainWindow )
 {
-    ui.setupUi ( this );
-
+    ui->setupUi ( this );
+    setAcceptDrops ( true );
     //-------------------------------------------------------------------------
     // file
     //-------------------------------------------------------------------------
@@ -23,34 +25,34 @@ Editor::Editor ( QWidget *parent, Qt::WFlags flags )
                           QKeySequence::Open );
 
     //-------------------------------------------------------------------------
-    // create object
-    //-------------------------------------------------------------------------
-
-
-
-    //-------------------------------------------------------------------------
     //view
     //-------------------------------------------------------------------------
 
     viewMenu = menuBar()->addMenu ( tr ( "&View" ) );
 
-    mScenePanel = new QFrame ( this );
-    setCentralWidget ( mScenePanel );
+    mScenePanel = new EScenePanel ( this );
+    this->setCentralWidget ( mScenePanel );
 
     mObjectPropertyPanel = new QDockWidget ( tr ( "ObjectProperty" ), this );
     mObjectPropertyPanel->setAllowedAreas ( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    viewMenu->addAction ( mObjectPropertyPanel->toggleViewAction() );
-    addDockWidget ( Qt::RightDockWidgetArea, mObjectPropertyPanel );
     mObjectPropertyPanel->setMinimumWidth ( 200 );
     mObjectPropertyPanel->setMinimumHeight ( 200 );
-    //mObjectPropertyPanel->hide();
+	viewMenu->addAction ( mObjectPropertyPanel->toggleViewAction() );
+	addDockWidget ( Qt::RightDockWidgetArea, mObjectPropertyPanel );
 
     mObjectListPanel = new QDockWidget ( tr ( "ObjectList" ), this );
     mObjectListPanel->setAllowedAreas ( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    viewMenu->addAction ( mObjectListPanel->toggleViewAction() );
-    addDockWidget ( Qt::LeftDockWidgetArea, mObjectListPanel );
     mObjectListPanel->setMinimumWidth ( 300 );
     mObjectListPanel->setMinimumHeight ( 200 );
+	viewMenu->addAction ( mObjectListPanel->toggleViewAction() );
+	addDockWidget ( Qt::LeftDockWidgetArea, mObjectListPanel );
+
+    mOptionPanel = new QDockWidget ( tr ( "Option" ), this );
+    mOptionPanel->setAllowedAreas ( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    mOptionPanel->setMinimumWidth ( 300 );
+    mOptionPanel->setMinimumHeight ( 200 );
+	viewMenu->addAction ( mOptionPanel->toggleViewAction() );
+	addDockWidget ( Qt::LeftDockWidgetArea, mOptionPanel );
 
     mIdleTimeID = startTimer ( 0 );
 
@@ -59,7 +61,7 @@ Editor::Editor ( QWidget *parent, Qt::WFlags flags )
 
 Editor::~Editor()
 {
-
+    dSafeDelete ( ui );
 }
 
 
@@ -68,7 +70,7 @@ void Editor::timerEvent ( QTimerEvent * timeevent )
     if ( timeevent->timerId() == mIdleTimeID )
     {
         EditorApp* app = ( EditorApp* ) qApp;
-        app->RenderGame();
+        app->updateGame();
     }
     else
     {
@@ -89,21 +91,35 @@ void Editor::openFile()
 }
 
 
-
-void Editor::createObj ( const char* string )
-{
-
-}
-
-
 bool Editor::winEvent ( MSG *message, long *result )
 {
-    return __super::winEvent ( message, result );
+    //return __super::winEvent ( message, result );
+    return true;
 }
 
 void Editor::setFocus ( Qt::FocusReason reason )
 {
     __super::setFocus ( reason );
+}
+
+void Editor::mouseMoveEvent ( QMouseEvent * mouseEvent )
+{
+    __super::mouseMoveEvent ( mouseEvent );
+    int n = mouseEvent->pos().rx();
+}
+
+bool Editor::event ( QEvent* event )
+{
+	switch (event->type())
+	{
+	case QEvent::MouseMove:
+		{
+		}
+		break;
+	default:
+		break;
+	}
+	return __super::event ( event );
 }
 
 

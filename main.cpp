@@ -1,39 +1,39 @@
+#include "stdafx.h"
+#include <vld.h>
 #include "editor.h"
-#include <QtGui/QApplication>
-#include "../src/gui/widgets/qpushbutton.h"
-#include "../src/corelib/codecs/qtextcodec_p.h"
+//#include <QtGui/QApplication>
+//#include "gui/widgets/qpushbutton.h"
 #include "QDockWidget.h"
 #include "Editorapp.h"
-#include "EEditorSheetManager.h"
+#include "EEditorManager.h"
 #include "QTreeView.h"
-#include "gui/widgets/qmenubar.h"
+//#include "gui/widgets/qmenubar.h"
 #include "XSingleton.h"
-void InitCodeSetting();
+#include "qtextcodec.h"
+void initCodeSetting();
+
 int main ( int argc, char *argv[] )
 {
     EditorApp* app = new EditorApp ( argc, argv );
+	app->setGameUpdate ( FiGameDemo_Update );
+	app->setGameShutDown ( FiGameDemo_ShutDown );
 
-    InitCodeSetting();
+    initCodeSetting();
 
-    Editor* editor=new Editor();
+    Editor* editor = new Editor();
+    HWND sceneWindowHandle = ( HWND ) editor->getScenePanel()->winId();
+    //HWND sceneWindowHandle=( HWND )editor->getScenePanel()->effectiveWinId();
+    FiGameDemo_Init ( sceneWindowHandle );
 
-    app->SetSheetManager ( SheetMgr );
-    CXASSERT_RETURN_FALSE ( SheetMgr->Init ( editor ) );
-    SheetMgr->GetObjectListView()->setParent ( editor->GetObjectListPanel() );
-    editor->GetObjectEditPanel()->setWidget ( ( reinterpret_cast<QWidget*> ( SheetMgr->GetPropertyView() ) ) );
-    editor->GetObjectListPanel()->setWidget ( ( reinterpret_cast<QWidget*> ( SheetMgr->GetObjectListView() ) ) );
+    CXASSERT_RETURN_FALSE ( EditorMgr->init ( editor ) );
+
     editor->show();
+    app->exec();
 
-	FiGameDemo_Init( editor->GetScenePanel()->winId(), SheetMgr );
-	app->SetUpdateBack ( FiGameDemo_Update );
-	app->SetShutDownBack ( FiGameDemo_ShutDown );
-
-	app->exec();
-
-	delete editor;
-	editor=0;
-	delete app;
-	app = 0;
+    delete editor;
+    editor = 0;
+    delete app;
+    app = 0;
 
 
     //FiGameDemo(w.GetScenePanel()->winId(),psheet);
@@ -68,11 +68,11 @@ int main ( int argc, char *argv[] )
     return 0;
 }
 
-void InitCodeSetting()
+void initCodeSetting()
 {
     QTextCodec *codec = QTextCodec::codecForName ( "UTF-8" );
 
-    QTextCodec::setCodecForTr ( codec );
+    QTextCodec::setCodecForLocale ( codec );
     QTextCodec::setCodecForLocale ( QTextCodec::codecForLocale() );
-    QTextCodec::setCodecForCStrings ( QTextCodec::codecForLocale() );
+    //QTextCodec::setCodecForCStrings ( QTextCodec::codecForLocale() );
 }

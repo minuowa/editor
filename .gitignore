@@ -1,6 +1,15 @@
+<<<<<<< HEAD
+*.orig
+*.log
+*.obj
+*.tlog
+*.pdb
+*.ilk
+=======
 /Debug/*.tlog
 /Debug/*.log
 /Debug/*.cache
 /Debug/*.obj
 /Debug/*.pdb
 /*.orig
+>>>>>>> 04dbf6e479e1e51b4e2a87b4fc9876c7d44eb8e0

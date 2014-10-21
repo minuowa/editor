@@ -1,52 +1,58 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include <QtGui/QMainWindow>
-#include "ui_editor.h"
-#include "EEditorSheetManager.h"
-
+#include "EEditorManager.h"
+#include "qmainwindow.h"
+namespace Ui {
+	class MainWindow;
+}
 class Editor : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Editor ( QWidget *parent = 0, Qt::WFlags flags = Qt::WindowMinMaxButtonsHint );
+	Editor ( QWidget *parent = 0, Qt::WindowType flags = Qt::WindowOverridesSystemGestures );
+	//Editor ( QWidget *parent = 0, Qt::WindowType flags = Qt::Window );
     ~Editor();
 
-    void InitObjectMenu ( const QVector<QString>& list );
 protected:
     virtual void timerEvent ( QTimerEvent * );
     virtual bool winEvent ( MSG *message, long *result );
 
     void setFocus ( Qt::FocusReason reason );
+	virtual void mouseMoveEvent(QMouseEvent *);
+	bool event(QEvent *);
 
 public slots:
     void openFile();
-    void createObj ( const char* string );
-
 private:
-    Ui::EditorClass ui;
+    Ui::MainWindow* ui;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *viewMenu;
     QDockWidget* mObjectPropertyPanel;
     QDockWidget* mObjectListPanel;
+	QDockWidget* mOptionPanel;
     QWidget* mScenePanel;
     QString curSceneFile;
 
     int  mIdleTimeID;
 public:
-    QDockWidget* GetObjectEditPanel() const
+    QDockWidget* getObjectEditPanel() const
     {
         return mObjectPropertyPanel;
     }
-    QDockWidget* GetObjectListPanel() const
+    QDockWidget* getObjectListPanel() const
     {
         return mObjectListPanel;
     }
-    QWidget* GetScenePanel() const
+	QDockWidget* getOptionPanel() const
+	{
+		return mOptionPanel;
+	}
+    QWidget* getScenePanel() const
     {
-        return reinterpret_cast<QWidget*> ( mScenePanel );
+        return  mScenePanel;
     }
 };
 
