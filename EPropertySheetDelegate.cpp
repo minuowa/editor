@@ -60,13 +60,14 @@
 EPropertySheetDelegate::EPropertySheetDelegate ( QObject *parent )
     : QItemDelegate ( parent )
 {
+    connect ( this, SIGNAL ( commitData ( QWidget* )), this, SLOT ( onDataChange (  QWidget* ) ) );
 }
 //! [0]
 
 //! [1]
-QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
-        const QStyleOptionViewItem & option ,
-        const QModelIndex & index ) const
+          QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
+                  const QStyleOptionViewItem & option ,
+                  const QModelIndex & index ) const
 {
     QVariant var = index.model()->data ( index, Qt::EditRole );
 
@@ -105,8 +106,8 @@ QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
         editor->setFrame ( true );
         CXPropEnum* propEnum = ( CXPropEnum* ) propVar->mProp;
         QStringList qstrList;
-for ( auto & s: propEnum->getStringList() )
-            qstrList.push_back ( s.mName );
+for ( auto & s: propEnum->getStructList() )
+            qstrList.push_back ( s->mName );
         editor->addItems ( qstrList );
         int var = 0;
         dCast ( var, propEnum->mVar );
@@ -270,10 +271,10 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
     case eType_Enum:
     {
         QComboBox *curEditor = static_cast<QComboBox*> ( editor );
-		int idx=curEditor->currentIndex();
-		CXPropEnum* pEnum=(CXPropEnum*)propBase;
-		int prop = pEnum->getValue(idx); 
-		model->setData ( index, curEditor->currentText(), Qt::EditRole );
+        int idx = curEditor->currentIndex();
+        CXPropEnum* pEnum = ( CXPropEnum* ) propBase;
+        int prop = pEnum->getValue ( idx );
+        model->setData ( index, curEditor->currentText(), Qt::EditRole );
         EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
@@ -308,4 +309,10 @@ void EPropertySheetDelegate::updateEditorGeometry ( QWidget *editor,
     break;
     }
 }
+
+void EPropertySheetDelegate::onDataChange ( QWidget *editor )
+{
+
+}
+
 //! [4]

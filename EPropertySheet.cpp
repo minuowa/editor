@@ -35,9 +35,7 @@ void toQVariant ( CXProp* prop, QVariant& var )
     case eType_Enum:
     {
         CXPropEnum* pEnum = ( CXPropEnum* ) prop;
-        int idx = pEnum->getIndex();
-        const CXDynaArray<CXEnumStruct>& gStrList = pEnum->getStringList();
-        var = gStrList[idx].mName;
+        var = pEnum->getTheName();
     }
     break;
     default:

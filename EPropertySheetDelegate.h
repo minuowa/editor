@@ -64,6 +64,8 @@ public:
 
     void updateEditorGeometry(QWidget *editor,
         const QStyleOptionViewItem &option, const QModelIndex &index) const;
+	public slots:
+		void onDataChange ( QWidget *editor );
 };
 //! [0]
 

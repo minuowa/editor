@@ -73,6 +73,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_editor.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_EPropertySheetDelegate.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GeneratedFiles\ui_mainwindow.h">
