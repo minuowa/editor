@@ -9,6 +9,7 @@
 #include "ui_mainwindow.h"
 #include "qevent.h"
 #include "EScenePanel.h"
+#include "GGame.h"
 Editor::Editor ( QWidget *parent, Qt::WindowType flags )
     : QMainWindow ( parent, flags )
     , mIdleTimeID ( 0 )
@@ -24,6 +25,8 @@ Editor::Editor ( QWidget *parent, Qt::WindowType flags )
     fileMenu->addAction ( tr ( "&Open..." ), this, SLOT ( openFile() ),
                           QKeySequence::Open );
 
+	fileMenu->addAction ( tr ( "&Save..." ), this, SLOT ( saveFile() ),
+		QKeySequence::Save );
     //-------------------------------------------------------------------------
     //view
     //-------------------------------------------------------------------------
@@ -81,12 +84,12 @@ void Editor::timerEvent ( QTimerEvent * timeevent )
 void Editor::openFile()
 {
     QString filePath = QFileDialog::getOpenFileName ( this, tr ( "Open File" ),
-                       curSceneFile, tr ( "XML files (*.xml);;HTML files (*.html);;"
-                                          "SVG files (*.svg);;User Interface files (*.ui)" ) );
+                       curSceneFile, tr ( "XML files (*.xml);;") );
 
     if ( !filePath.isEmpty() )
     {
         curSceneFile = filePath;
+		TheSceneMgr->loadScene(curSceneFile.toStdString().c_str());
     }
 }
 
@@ -120,6 +123,18 @@ bool Editor::event ( QEvent* event )
 		break;
 	}
 	return __super::event ( event );
+}
+
+void Editor::saveFile()
+{
+	QString filePath = QFileDialog::getOpenFileName ( this, tr ( "Save File" ),
+		curSceneFile, tr ( "XML files (*.xml);;") );
+
+	if ( !filePath.isEmpty() )
+	{
+		curSceneFile = filePath;
+		TheSceneMgr->saveScene(curSceneFile.toStdString().c_str());
+	}
 }
 
 

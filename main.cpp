@@ -35,6 +35,7 @@ int main ( int argc, char *argv[] )
     delete app;
     app = 0;
 
+	CXSingleton<EEditorManager>::destoryInstance();
 
     //FiGameDemo(w.GetScenePanel()->winId(),psheet);
 

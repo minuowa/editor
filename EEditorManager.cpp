@@ -23,17 +23,19 @@ EEditorManager::EEditorManager ( void )
 EEditorManager::~EEditorManager ( void )
 {
     dSafeDelete ( mObjectMenu );
+	TheSceneMgr->mDelegateReloadScene -= this;
+
 }
 
 bool EEditorManager::init ( Editor* parent )
 {
     mParent = parent;
 
-	mObjectPropertySheet = new EPropertySheet ( parent->getObjectEditPanel() );
+    mObjectPropertySheet = new EPropertySheet ( parent->getObjectEditPanel() );
     parent->getObjectEditPanel()->setWidget ( mObjectPropertySheet->getView() );
 
     mOptionSheet = new EPropertySheet ( parent->getOptionPanel() );
-	parent->getOptionPanel()->setWidget ( mOptionSheet->getView() );
+    parent->getOptionPanel()->setWidget ( mOptionSheet->getView() );
 
     if ( 0 )
     {
@@ -63,17 +65,18 @@ bool EEditorManager::init ( Editor* parent )
     initObjectMenu ( TheSceneMgr->getGameObjectTypes() );
     initComponentMenu ( TheSceneMgr->getObjectComponentTypes() );
 
-	//mComponentMenu->hide();
+    //mComponentMenu->hide();
 
     GNode::mDelegateComponentChange += this;
     GObject::mDelegateAlterName += this;
+    TheSceneMgr->mDelegateReloadScene += this;
 
     updateOptionSheet();
 
     updateObjectList();
 
-	//mOptionSheet->hide();
-	//mObjectPropertySheet->hide();
+    //mOptionSheet->hide();
+    //mObjectPropertySheet->hide();
 
     return true;
 }
@@ -221,6 +224,11 @@ void EEditorManager::onCallBack ( const CXDelegate& xdelegate )
     {
         mObjectListSheet->alterItemName ( GObject::mOperatorObjectName, GObject::mTargetName );
     }
+    else if ( xdelegate == TheSceneMgr->mDelegateReloadScene )
+    {
+        updateObjectList();
+        updatePropertySheet();
+    }
 }
 
 void EEditorManager::updatePopMenu()
@@ -245,6 +253,9 @@ void EEditorManager::updatePopMenu()
 void EEditorManager::updatePropertySheet()
 {
     GNode* target = TheSceneMgr->getNodeByName ( mSelectedObj.toStdString().c_str() );
+    if ( !target )
+        return;
+
     CXASSERT ( target );
     mObjectPropertySheet->update ( target );
 }

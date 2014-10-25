@@ -25,6 +25,7 @@ protected:
 
 public slots:
     void openFile();
+	void saveFile();
 private:
     Ui::MainWindow* ui;
     QMenu *fileMenu;

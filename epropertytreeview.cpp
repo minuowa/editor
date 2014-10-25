@@ -43,6 +43,22 @@ void EPropertyTreeView::dropEvent ( QDropEvent *event )
     }
     else if ( mimeData->hasText() )
     {
+        QString text = mimeData->text();
+        QModelIndex idx = indexAt ( event->pos() );
+        if ( model() )
+        {
+            QVariant var = model()->data ( idx );
+            if ( var.type() == QMetaType::QString )
+            {
+                GString str = text.toStdString();
+                static const char* fileFlag = "file:///";
+                str = str.substr ( strlen ( fileFlag ), -1 );
+                CXFileName path ( str.c_str() );
+                GString relname;
+                path.GetRelativeFileName ( relname );
+                model()->setData ( idx, relname.c_str() );
+            }
+        }
     }
     else if ( mimeData->hasUrls() )
     {

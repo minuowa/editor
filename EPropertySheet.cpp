@@ -151,6 +151,9 @@ void EPropertySheet::addProperty ( const char* categoryName, const char* propNam
     QVariant var;
     toQVariant ( propVar->mProp, var );
     item->setData ( var, Qt::EditRole );
+	//item->setWhatsThis("WhatsThis");
+	//item->setStatusTip("StatusTip");
+	item->setToolTip("ToolTip");
     //item->setData ( Qt::EditRole ,var);
     lists.push_back ( item );
 

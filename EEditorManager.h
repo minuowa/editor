@@ -11,14 +11,14 @@ class QMenu;
 class QMainWindow;
 class QAction;
 class Editor;
-class  EEditorManager: public QObject,public CXCallBack
+class  EEditorManager: public QObject, public CXCallBack
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
     EEditorManager ( void );
     ~EEditorManager ( void );
 
-	bool init ( Editor* parent );
+    bool init ( Editor* parent );
 
     QTreeView* getPropertyView() const;
     QTreeView* getObjectListView() const;
@@ -29,27 +29,27 @@ public:
     void setComponentMenuState ( const char* componentType, bool checked, bool enabled );
     void resetComponentMenuState();
 
-	void notifyPropertyChange(void* pre,void* changed);
-	void notifyPropertyChangeEnd(void* cur);
+    void notifyPropertyChange ( void* pre, void* changed );
+    void notifyPropertyChangeEnd ( void* cur );
 
-	void updateObjectList();
-	void updatePopMenu();
-	void updatePropertySheet();
+    void updateObjectList();
+    void updatePopMenu();
+    void updatePropertySheet();
 
-	void updateOptionSheet();
+    void updateOptionSheet();
 public slots:
     void onAddObjectAction ( QAction* );
     void onComponentAction ( QAction* );
 protected:
     EPropertySheet* mObjectPropertySheet;
-	EPropertySheet* mOptionSheet;
+    EPropertySheet* mOptionSheet;
     EObjectListSheet* mObjectListSheet;
 
     void* mWindowProc;
     QMainWindow* mParent;
     QMenu* mComponentMenu;
     QMenu* mObjectMenu;
-	QString mSelectedObj;
+    QString mSelectedObj;
 
 public:
 
@@ -57,13 +57,13 @@ public:
     {
         return mObjectPropertySheet;
     }
-	inline 	const QString& getSelectObj() const
-	{
-		return mSelectedObj;
-	}
-	void SetSelectObj(const char* obj);
+    inline 	const QString& getSelectObj() const
+    {
+        return mSelectedObj;
+    }
+    void SetSelectObj ( const char* obj );
 
-	virtual void onCallBack( const CXDelegate& );
+    virtual void onCallBack ( const CXDelegate& );
 
 };
 
