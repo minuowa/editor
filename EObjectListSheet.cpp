@@ -7,6 +7,8 @@
 #include "EObjListSheetTreeView.h"
 #include "XSingleton.h"
 #include "Game.h"
+#include "qshortcut.h"
+#include "qkeysequence.h"
 EObjectListSheet::EObjectListSheet ( QWidget *parent/*=0*/ )
     : QObject ( parent )
 {
@@ -24,6 +26,7 @@ EObjectListSheet::EObjectListSheet ( QWidget *parent/*=0*/ )
     CXASSERT ( res );
 
     GNode::mDelegateAddObj += this;
+    GNode::mDelegateDeleteObj += this;
 }
 
 
@@ -62,65 +65,14 @@ void EObjectListSheet::updateItemByAddObj ( const char* name, const char* parent
     }
 }
 
-void FindItem ( QStandardItem* parent, const char* name, QStandardItem*& res )
-{
-    if ( !parent )
-    {
-        return;
-    }
-    if ( parent->hasChildren() )
-    {
-        int row = parent->rowCount();
-        int col = parent->columnCount();
-
-        for ( int i = 0; i < row; ++i )
-        {
-            for ( int j = 0; j < col; ++j )
-            {
-                QStandardItem* item = parent->child ( i, j );
-                if ( item )
-                {
-                    if ( item->text() == name )
-                    {
-                        res = item;
-                        return;
-                    }
-                    else
-                    {
-                        FindItem ( item, name, res );
-                    }
-                }
-            }
-        }
-    }
-}
 
 QStandardItem* EObjectListSheet::getItem ( const char* name )
 {
     int row = mTreeModel->rowCount();
     int col = mTreeModel->columnCount();
     QStandardItem* item = 0;
-    for ( int i = 0; i < row; ++i )
-    {
-        for ( int j = 0; j < col; ++j )
-        {
-            QStandardItem* child = mTreeModel->item ( i, j );
-            if ( child )
-            {
-                if ( child->text() == name )
-                {
-                    item = child;
-                    return item;
-                }
-                else
-                {
-                    FindItem ( child, name, item );
-                    if ( item )
-                        return item;
-                }
-            }
-        }
-    }
+    QStandardItem* root = mTreeModel->item ( 0, 0 );
+    findItem ( root, name, item );
     return item;
 }
 
@@ -153,6 +105,10 @@ void EObjectListSheet::onCallBack ( const CXDelegate& delgate )
     {
         updateItemByAddObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getObjectName() : nullptr,
                              GNode::mOperatorParentObj ? GNode::mOperatorParentObj->getObjectName() : nullptr );
+    }
+    else if ( delgate == GNode::mDelegateDeleteObj )
+    {
+        updateItemByDeleteObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getObjectName() : nullptr );
     }
 }
 
@@ -217,4 +173,106 @@ void EObjectListSheet::clearTreeItem()
     }
     mTreeModel->clear();
 }
+
+void EObjectListSheet::updateItemByDeleteObj ( const char* name )
+{
+    if ( nullptr == name )
+        return;
+    QStandardItem* root = mTreeModel->item ( 0, 0 );
+    if ( root )
+        deleteItem ( root, name );
+}
+
+bool EObjectListSheet::getItemPosition ( int& r, int& c, const char* text )
+{
+    int row = mTreeModel->rowCount();
+    int col = mTreeModel->columnCount();
+    QStandardItem* item = 0;
+    for ( int i = 0; i < row; ++i )
+    {
+        for ( int j = 0; j < col; ++j )
+        {
+            QStandardItem* child = mTreeModel->item ( i, j );
+            if ( child )
+            {
+                if ( child->text() == text )
+                {
+                    r = i;
+                    c = j;
+                    return true;
+                }
+                else
+                {
+                    //if ( getItemPosition ( r, c, text ) )
+                    //    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void EObjectListSheet::findItem ( QStandardItem* parent, const char* name, QStandardItem*& res )
+{
+    if ( !parent )
+    {
+        return;
+    }
+    if ( parent->hasChildren() )
+    {
+        int row = parent->rowCount();
+        int col = parent->columnCount();
+
+        for ( int i = 0; i < row; ++i )
+        {
+            for ( int j = 0; j < col; ++j )
+            {
+                QStandardItem* item = parent->child ( i, j );
+                if ( item )
+                {
+                    if ( item->text() == name )
+                    {
+                        res = item;
+                        return;
+                    }
+                    else
+                    {
+                        findItem ( item, name, res );
+                    }
+                }
+            }
+        }
+    }
+}
+
+void EObjectListSheet::deleteItem ( QStandardItem* parent, const char* name )
+{
+    int row = parent->rowCount();
+    int col = parent->columnCount();
+
+    for ( int i = 0; i < row; ++i )
+    {
+        for ( int j = 0; j < col; ++j )
+        {
+            QStandardItem* item = parent->child ( i, j );
+            if ( item )
+            {
+                if ( item->text() == name )
+                {
+                    parent->takeChild ( i, j );
+                    parent->removeRow ( i );
+                    dSafeDelete ( item );
+                    return;
+                }
+                else
+                {
+                    deleteItem ( item, name );
+                }
+            }
+        }
+    }
+}
+
+
+
 

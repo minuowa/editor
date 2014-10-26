@@ -25,9 +25,7 @@ public:
     EObjectListSheet* getObjectListSheet() const;
 
     void initObjectMenu ( const CharStringArr& gameobjTypeArr );
-    void initComponentMenu ( const CharStringArr& componentTypeArr );
     void setComponentMenuState ( const char* componentType, bool checked, bool enabled );
-    void resetComponentMenuState();
 
     void notifyPropertyChange ( void* pre, void* changed );
     void notifyPropertyChangeEnd ( void* cur );
@@ -37,9 +35,10 @@ public:
     void updatePropertySheet();
 
     void updateOptionSheet();
+
+	Editor* getMainWindow();
 public slots:
     void onAddObjectAction ( QAction* );
-    void onComponentAction ( QAction* );
 protected:
     EPropertySheet* mObjectPropertySheet;
     EPropertySheet* mOptionSheet;
@@ -47,7 +46,6 @@ protected:
 
     void* mWindowProc;
     QMainWindow* mParent;
-    QMenu* mComponentMenu;
     QMenu* mObjectMenu;
     QString mSelectedObj;
 
@@ -62,7 +60,7 @@ public:
         return mSelectedObj;
     }
     void SetSelectObj ( const char* obj );
-
+	void clearSelect();
     virtual void onCallBack ( const CXDelegate& );
 
 };

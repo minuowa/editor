@@ -12,13 +12,14 @@ class QMenu;
 class QModelIndex;
 class QItemSelection;
 class GNode;
+class EObjListSheetTreeView;
 class  EObjectListSheet: public QObject, public CXCallBack
 {
 	Q_OBJECT
 public:
     EObjectListSheet (QWidget *parent=0 );
     ~EObjectListSheet();
-	inline QTreeView* getView() const;
+	inline EObjListSheetTreeView* getView() const;
 public:
 	void clearTreeItem();
     void show();
@@ -27,9 +28,14 @@ public:
 	void addChildByType(const char* typeName);
 	void alterItemName(const char* oldName,const char* targetName);
 protected:
-    void updateItemByAddObj ( const char* name, const char* parentName = 0 );
+	void updateItemByAddObj ( const char* name, const char* parentName = 0 );
+	void updateItemByDeleteObj ( const char* name);
 	void addChild(GNode* node,QStandardItem* item);
 	QStandardItem* getItem ( const char* name );
+	static void findItem ( QStandardItem* parent, const char* name, QStandardItem*& res );
+	static void deleteItem ( QStandardItem* parent, const char* name);
+
+	bool getItemPosition(int& row,int& col,const char* text);
 	void onSelect ( const QModelIndex& index );
 
 	virtual void onCallBack(const CXDelegate& delgate);
@@ -41,8 +47,8 @@ private:
     EPropertySheetDelegate*	mDelegate;
 };
 
-inline QTreeView* EObjectListSheet::getView() const
+inline EObjListSheetTreeView* EObjectListSheet::getView() const
 {
-	return mTreeView;
+	return (EObjListSheetTreeView*)mTreeView;
 }
 

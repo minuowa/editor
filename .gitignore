@@ -13,3 +13,4 @@
 /Debug/*.pdb
 /*.orig
 >>>>>>> 04dbf6e479e1e51b4e2a87b4fc9876c7d44eb8e0
+*.cache

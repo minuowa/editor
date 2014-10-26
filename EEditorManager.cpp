@@ -23,7 +23,7 @@ EEditorManager::EEditorManager ( void )
 EEditorManager::~EEditorManager ( void )
 {
     dSafeDelete ( mObjectMenu );
-	TheSceneMgr->mDelegateReloadScene -= this;
+    TheSceneMgr->mDelegateReloadScene -= this;
 
 }
 
@@ -53,17 +53,11 @@ bool EEditorManager::init ( Editor* parent )
     mObjectListSheet = new EObjectListSheet ( mParent );
     parent->getObjectListPanel()->setWidget ( mObjectListSheet->getView() );
 
-    mComponentMenu = new QMenu ( mParent );
-    connect ( mComponentMenu, SIGNAL ( triggered ( QAction* ) ), this, SLOT ( onComponentAction (  QAction* ) ) );
-
-    ( ( EObjListSheetTreeView* ) mObjectListSheet->getView() )->setPopupMenu ( mComponentMenu );
-
-
     mObjectMenu = new QMenu ( "&GameObject"  );
     mParent->menuBar()->addMenu ( mObjectMenu );
 
     initObjectMenu ( TheSceneMgr->getGameObjectTypes() );
-    initComponentMenu ( TheSceneMgr->getObjectComponentTypes() );
+    mObjectListSheet->getView()->initComponentMenu ( TheSceneMgr->getObjectComponentTypes() );
 
     //mComponentMenu->hide();
 
@@ -100,19 +94,6 @@ EObjectListSheet* EEditorManager::getObjectListSheet() const
 
 
 
-void EEditorManager::initComponentMenu ( const CharStringArr& componentTypeArr )
-{
-    CharStringArr::const_iterator it ( componentTypeArr.begin() );
-    CharStringArr::const_iterator iend ( componentTypeArr.end() );
-    for ( ; it != iend; ++it )
-    {
-        const GString& name = *it;
-        QAction* action = new QAction ( name.c_str(), mParent );
-        action->setCheckable ( true );
-        action->setChecked ( false );
-        mComponentMenu->addAction ( action );
-    }
-}
 
 void EEditorManager::initObjectMenu ( const CharStringArr& gameobjTypeArr )
 {
@@ -129,34 +110,10 @@ void EEditorManager::initObjectMenu ( const CharStringArr& gameobjTypeArr )
 
 void EEditorManager::setComponentMenuState ( const char* componentType, bool checked, bool enabled )
 {
-    assert ( mComponentMenu );
-    QList<QAction*> actionList = mComponentMenu->actions();
-    int cnt = actionList.count();
-
-    for ( int i = 0; i < cnt; ++i )
-    {
-        QAction* action = actionList[i];
-        if ( action->text() == componentType )
-        {
-            action->setChecked ( checked );
-            action->setEnabled ( enabled );
-        }
-    }
+    mObjectListSheet->getView()->setComponentMenuState ( componentType, checked, enabled );
 }
 
-void EEditorManager::resetComponentMenuState()
-{
-    assert ( mComponentMenu );
-    QList<QAction*> actionList = mComponentMenu->actions();
-    int cnt = actionList.count();
 
-    for ( int i = 0; i < cnt; ++i )
-    {
-        QAction* action = actionList[i];
-        action->setChecked ( false );
-        action->setEnabled ( true );
-    }
-}
 
 
 void EEditorManager::onAddObjectAction ( QAction* action )
@@ -165,22 +122,7 @@ void EEditorManager::onAddObjectAction ( QAction* action )
     mObjectListSheet->addChildByType ( typeName.toStdString().c_str() );
 }
 
-void EEditorManager::onComponentAction ( QAction* action )
-{
-    QString componentTypeName = action->text();
-    const QString& name = getSelectObj();
 
-    GNode* node = TheSceneMgr->getNodeByName ( name.toStdString().c_str() );
-    CXASSERT ( node );
-    if ( action->isChecked() )
-    {
-        node->attachComponent ( componentTypeName.toStdString().c_str() );
-    }
-    else
-    {
-        node->detachComponent ( componentTypeName.toStdString().c_str() );
-    }
-}
 
 void EEditorManager::notifyPropertyChange ( void* pre, void* changed )
 {
@@ -233,28 +175,17 @@ void EEditorManager::onCallBack ( const CXDelegate& xdelegate )
 
 void EEditorManager::updatePopMenu()
 {
-    GNode* target = TheSceneMgr->getNodeByName ( mSelectedObj.toStdString().c_str() );
-    CXASSERT ( target );
-
-    resetComponentMenuState();
-
-    GComponentOwner& owner = target->getComponentOwner();
-
-    for ( int i = 0; i < eComponentType_Count; ++i )
-    {
-        GComponentInterface* component = owner.getComponent ( ( eComponentType ) i );
-        if ( component )
-        {
-            setComponentMenuState ( component->GetComponentName(), true, component->canDetach()  );
-        }
-    }
+    mObjectListSheet->getView()->updateMenus();
 }
 
 void EEditorManager::updatePropertySheet()
 {
     GNode* target = TheSceneMgr->getNodeByName ( mSelectedObj.toStdString().c_str() );
     if ( !target )
+    {
+        mObjectPropertySheet->clearPropertyies();
         return;
+    }
 
     CXASSERT ( target );
     mObjectPropertySheet->update ( target );
@@ -275,4 +206,15 @@ void EEditorManager::updateOptionSheet()
 {
     mOptionSheet->update ( GameOption, false );
 }
+
+Editor* EEditorManager::getMainWindow()
+{
+    return ( Editor* ) mParent;
+}
+
+void EEditorManager::clearSelect()
+{
+    mSelectedObj.clear();
+}
+
 

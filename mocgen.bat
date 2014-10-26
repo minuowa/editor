@@ -7,3 +7,4 @@ moc epropertytreeview.h -o %TarPath%moc_epropertytreeview.cpp
 moc ESceneframe.h -o %TarPath%moc_ESceneframe.cpp
 moc editor.h -o %TarPath%moc_editor.cpp
 moc Editorapp.h -o %TarPath%moc_Editorapp.cpp
+moc EObjListSheetTreeView.h -o %TarPath%moc_EObjListSheetTreeView.cpp
