@@ -11,7 +11,10 @@
 #include "XSingleton.h"
 #include "qtextcodec.h"
 void initCodeSetting();
-
+#ifndef _DEBUG
+#include < QtPlugin >
+//Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
+#endif
 int main ( int argc, char *argv[] )
 {
     EditorApp* app = new EditorApp ( argc, argv );

@@ -22,7 +22,6 @@ EEditorManager::EEditorManager ( void )
 
 EEditorManager::~EEditorManager ( void )
 {
-    dSafeDelete ( mObjectMenu );
     TheSceneMgr->mDelegateReloadScene -= this;
 
 }
@@ -53,8 +52,6 @@ bool EEditorManager::init ( Editor* parent )
     mObjectListSheet = new EObjectListSheet ( mParent );
     parent->getObjectListPanel()->setWidget ( mObjectListSheet->getView() );
 
-    mObjectMenu = new QMenu ( "&GameObject"  );
-    mParent->menuBar()->addMenu ( mObjectMenu );
 
     initObjectMenu ( TheSceneMgr->getGameObjectTypes() );
     mObjectListSheet->getView()->initComponentMenu ( TheSceneMgr->getObjectComponentTypes() );
@@ -97,15 +94,7 @@ EObjectListSheet* EEditorManager::getObjectListSheet() const
 
 void EEditorManager::initObjectMenu ( const CharStringArr& gameobjTypeArr )
 {
-    QMenu* menu = mObjectMenu->addMenu ( "AddObject" );
-    CharStringArr::const_iterator it ( gameobjTypeArr.begin() );
-    CharStringArr::const_iterator iend ( gameobjTypeArr.end() );
-    for ( ; it != iend; ++it )
-    {
-        const GString& name = *it;
-        menu->addAction ( name.c_str() );
-    }
-    connect ( menu, SIGNAL ( triggered ( QAction* ) ), this, SLOT ( onAddObjectAction (  QAction* ) ) );
+	mObjectListSheet->getView()->initObjectMenu ( gameobjTypeArr );
 }
 
 void EEditorManager::setComponentMenuState ( const char* componentType, bool checked, bool enabled )
@@ -113,14 +102,6 @@ void EEditorManager::setComponentMenuState ( const char* componentType, bool che
     mObjectListSheet->getView()->setComponentMenuState ( componentType, checked, enabled );
 }
 
-
-
-
-void EEditorManager::onAddObjectAction ( QAction* action )
-{
-    QString typeName = action->text();
-    mObjectListSheet->addChildByType ( typeName.toStdString().c_str() );
-}
 
 
 
@@ -215,6 +196,16 @@ Editor* EEditorManager::getMainWindow()
 void EEditorManager::clearSelect()
 {
     mSelectedObj.clear();
+}
+
+const QString& EEditorManager::getSelectObj() const
+{
+	return mSelectedObj;
+}
+
+EPropertySheet* EEditorManager::getPropertySheet() const
+{
+	return mObjectPropertySheet;
 }
 
 

@@ -10,6 +10,7 @@
 #include "qevent.h"
 #include "EScenePanel.h"
 #include "GGame.h"
+#include "qshortcut.h"
 Editor::Editor ( QWidget *parent, Qt::WindowType flags )
     : QMainWindow ( parent, flags )
     , mIdleTimeID ( 0 )
@@ -30,6 +31,10 @@ Editor::Editor ( QWidget *parent, Qt::WindowType flags )
     //-------------------------------------------------------------------------
     //view
     //-------------------------------------------------------------------------
+	mAssistMenu = menuBar()->addMenu ( tr ( "&Assist" ) );
+	mAssistMenu->addAction ( tr ( "&NextCamera(F3)" ), this, SLOT ( changeToNextCamera() ));
+	QShortcut* shortcut = new QShortcut ( QKeySequence ( Qt::Key_F3), this );
+	connect ( shortcut, SIGNAL ( activated() ), this, SLOT ( changeToNextCamera() ) );
 
     viewMenu = menuBar()->addMenu ( tr ( "&View" ) );
 
@@ -135,6 +140,11 @@ void Editor::saveFile()
 		curSceneFile = filePath;
 		TheSceneMgr->saveScene(curSceneFile.toStdString().c_str());
 	}
+}
+
+void Editor::changeToNextCamera()
+{
+	TheSceneMgr->changeToNextCamera();
 }
 
 

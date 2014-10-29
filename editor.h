@@ -25,12 +25,14 @@ protected:
 
 public slots:
     void openFile();
+	void changeToNextCamera();
 	void saveFile();
 private:
     Ui::MainWindow* ui;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *viewMenu;
+	QMenu* mAssistMenu;
     QDockWidget* mObjectPropertyPanel;
     QDockWidget* mObjectListPanel;
 	QDockWidget* mOptionPanel;

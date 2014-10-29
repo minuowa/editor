@@ -73,7 +73,10 @@ EPropertySheetDelegate::EPropertySheetDelegate ( QObject *parent )
 
     QStandardItemModel* mymode = ( QStandardItemModel* ) ( index.model() );
     EPropertySheetTreeItem* item = dynamic_cast<EPropertySheetTreeItem*> ( mymode->itemFromIndex ( index ) );
-    EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
+    /** @brief the item behind category is null **/
+	if(!item)
+		return nullptr;
+	EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
     CXProp* propBase = propVar->mProp;
 
     QWidget* widget = 0;

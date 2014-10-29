@@ -7,19 +7,23 @@
 #include "qshortcut.h"
 #include "qkeysequence.h"
 #include "EEditorManager.h"
-
+#include "EObjectListSheet.h"
 
 EObjListSheetTreeView::EObjListSheetTreeView ( QWidget *parent/* = 0*/ )
     : QTreeView ( parent )
 {
     setContextMenuPolicy ( Qt::ActionsContextMenu );
 
-    mComponentMenu = new QMenu ( ( QWidget* ) EditorMgr->getMainWindow() );
+    mMainMenu = new QMenu ( this );
+
+    mComponentMenu = new QMenu ( "&Component" );
     connect ( mComponentMenu, SIGNAL ( triggered ( QAction* ) ), this, SLOT ( onComponentAction (  QAction* ) ) );
-    //QAction* a1=new QAction(this);
-    //a1->setShortcut(QKeySequence(tr("Ctrl+D")));
-    //this->addAction(a1);
-    //connect(a1,SIGNAL(triggered()),this,SLOT(close()));
+    mMainMenu->addMenu ( mComponentMenu );
+
+    mObjectMenu = new QMenu ( "&GameObject" );
+    mMainMenu->addMenu ( mObjectMenu );
+
+    mObjectMenu->addAction ( tr ( "&Delete(Shift+Del)" ), this, SLOT ( deleteObj() ) );
 
     QShortcut* shortcut = new QShortcut ( QKeySequence ( Qt::SHIFT + Qt::Key_Delete ), this );
     connect ( shortcut, SIGNAL ( activated() ), this, SLOT ( deleteObj() ) );
@@ -28,6 +32,8 @@ EObjListSheetTreeView::EObjListSheetTreeView ( QWidget *parent/* = 0*/ )
 
 EObjListSheetTreeView::~EObjListSheetTreeView ( void )
 {
+    dSafeDelete ( mObjectMenu );
+    dSafeDelete ( mComponentMenu );
 }
 
 void EObjListSheetTreeView::mouseReleaseEvent ( QMouseEvent *event )
@@ -51,8 +57,8 @@ bool EObjListSheetTreeView::event ( QEvent* event )
         if ( !obj.isEmpty() )
         {
             QContextMenuEvent* menuEvent = ( QContextMenuEvent* ) event;
-            CXASSERT ( mComponentMenu );
-            mComponentMenu->exec ( menuEvent->globalPos() );
+            CXASSERT ( mMainMenu );
+            mMainMenu->exec ( menuEvent->globalPos() );
         }
     }
     break;
@@ -153,4 +159,24 @@ void EObjListSheetTreeView::resetComponentMenuState()
         action->setChecked ( false );
         action->setEnabled ( true );
     }
+}
+
+void EObjListSheetTreeView::initObjectMenu ( const CharStringArr& gameobjTypeArr )
+{
+    QMenu* menu = mObjectMenu->addMenu ( "Add" );
+    CharStringArr::const_iterator it ( gameobjTypeArr.begin() );
+    CharStringArr::const_iterator iend ( gameobjTypeArr.end() );
+    for ( ; it != iend; ++it )
+    {
+        const GString& name = *it;
+        menu->addAction ( name.c_str() );
+    }
+    connect ( menu, SIGNAL ( triggered ( QAction* ) ), this, SLOT ( onAddObjectAction (  QAction* ) ) );
+
+}
+
+void EObjListSheetTreeView::onAddObjectAction ( QAction* action )
+{
+    QString typeName = action->text();
+    EditorMgr->getObjectListSheet()->addChildByType ( typeName.toStdString().c_str() );
 }

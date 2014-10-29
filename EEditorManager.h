@@ -37,8 +37,12 @@ public:
     void updateOptionSheet();
 
 	Editor* getMainWindow();
-public slots:
-    void onAddObjectAction ( QAction* );
+
+	EPropertySheet* getPropertySheet() const;
+	const QString& getSelectObj() const;
+	void SetSelectObj ( const char* obj );
+	void clearSelect();
+
 protected:
     EPropertySheet* mObjectPropertySheet;
     EPropertySheet* mOptionSheet;
@@ -46,21 +50,9 @@ protected:
 
     void* mWindowProc;
     QMainWindow* mParent;
-    QMenu* mObjectMenu;
     QString mSelectedObj;
 
 public:
-
-    inline EPropertySheet* getPropertySheet() const
-    {
-        return mObjectPropertySheet;
-    }
-    inline 	const QString& getSelectObj() const
-    {
-        return mSelectedObj;
-    }
-    void SetSelectObj ( const char* obj );
-	void clearSelect();
     virtual void onCallBack ( const CXDelegate& );
 
 };

@@ -52,6 +52,11 @@ void EObjectListSheet::updateItemByAddObj ( const char* name, const char* parent
         {
             parent = getItem ( parentName );
         }
+		if(!parent)
+		{
+			dSafeDelete(newobj);
+			return;
+		}
         CXASSERT_RETURN ( parent );
         mTreeModel->setRowCount ( mTreeModel->rowCount() + 1 );
         parent->appendRow ( newobj );
@@ -68,8 +73,6 @@ void EObjectListSheet::updateItemByAddObj ( const char* name, const char* parent
 
 QStandardItem* EObjectListSheet::getItem ( const char* name )
 {
-    int row = mTreeModel->rowCount();
-    int col = mTreeModel->columnCount();
     QStandardItem* item = 0;
     QStandardItem* root = mTreeModel->item ( 0, 0 );
     findItem ( root, name, item );

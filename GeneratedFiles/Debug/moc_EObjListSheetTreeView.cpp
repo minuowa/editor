@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_EObjListSheetTreeView_t {
-    QByteArrayData data[5];
-    char stringdata[60];
+    QByteArrayData data[6];
+    char stringdata[78];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,10 +33,11 @@ QT_MOC_LITERAL(0, 0, 21),
 QT_MOC_LITERAL(1, 22, 9),
 QT_MOC_LITERAL(2, 32, 0),
 QT_MOC_LITERAL(3, 33, 17),
-QT_MOC_LITERAL(4, 51, 8)
+QT_MOC_LITERAL(4, 51, 8),
+QT_MOC_LITERAL(5, 60, 17)
     },
     "EObjListSheetTreeView\0deleteObj\0\0"
-    "onComponentAction\0QAction*"
+    "onComponentAction\0QAction*\0onAddObjectAction"
 };
 #undef QT_MOC_LITERAL
 
@@ -46,7 +47,7 @@ static const uint qt_meta_data_EObjListSheetTreeView[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -54,11 +55,13 @@ static const uint qt_meta_data_EObjListSheetTreeView[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   24,    2, 0x0a /* Public */,
-       3,    1,   25,    2, 0x0a /* Public */,
+       1,    0,   29,    2, 0x0a /* Public */,
+       3,    1,   30,    2, 0x0a /* Public */,
+       5,    1,   33,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 4,    2,
     QMetaType::Void, 0x80000000 | 4,    2,
 
        0        // eod
@@ -71,6 +74,7 @@ void EObjListSheetTreeView::qt_static_metacall(QObject *_o, QMetaObject::Call _c
         switch (_id) {
         case 0: _t->deleteObj(); break;
         case 1: _t->onComponentAction((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
+        case 2: _t->onAddObjectAction((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -101,13 +105,13 @@ int EObjListSheetTreeView::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 3)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
 }
