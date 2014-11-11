@@ -25,7 +25,6 @@ int main ( int argc, char *argv[] )
 
     Editor* editor = new Editor();
     HWND sceneWindowHandle = ( HWND ) editor->getScenePanel()->winId();
-    //HWND sceneWindowHandle=( HWND )editor->getScenePanel()->effectiveWinId();
     FiGameDemo_Init ( sceneWindowHandle );
 
     CXASSERT_RETURN_FALSE ( EditorMgr->init ( editor ) );

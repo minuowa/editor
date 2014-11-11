@@ -57,4 +57,4 @@ public:
 
 };
 
-#define EditorMgr CXSingleton<EEditorManager>::GetSingletonPtr()
+#define EditorMgr CXSingleton<EEditorManager>::getInstance()

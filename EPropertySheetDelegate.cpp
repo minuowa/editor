@@ -90,6 +90,14 @@ EPropertySheetDelegate::EPropertySheetDelegate ( QObject *parent )
         widget = editor;
     }
     break;
+	case eType_UInt:
+		{
+			QSpinBox *editor = new QSpinBox ( parent );
+			editor->setMaximum ( INT_MAX );
+			editor->setMinimum ( 0 );
+			widget = editor;
+		}
+		break;
     case eType_Bool:
     {
         QCheckBox *editor = new QCheckBox ( parent );
@@ -157,11 +165,15 @@ void EPropertySheetDelegate::setEditorData ( QWidget *editor,
     case eType_Int:
     {
         QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
-        curEditor->setMinimum ( 0 );
-        curEditor->setMaximum ( 100 );
         curEditor->setValue ( var.toInt() );
     }
     break;
+	case eType_UInt:
+		{
+			QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
+			curEditor->setValue ( var.toUInt() );
+		}
+		break;
     case eType_Bool:
     {
         QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
@@ -231,6 +243,16 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
+	case eType_UInt:
+		{
+			QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
+			unsigned int prop = (unsigned int)curEditor->value();
+			model->setData ( index, prop, Qt::EditRole );
+			EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+			dCast ( propVar->mPtr, prop );
+			EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+		}
+		break;
     case eType_Bool:
     {
         QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );

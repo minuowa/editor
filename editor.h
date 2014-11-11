@@ -26,6 +26,7 @@ protected:
 public slots:
     void openFile();
 	void changeToNextCamera();
+	void moveToNextCamera();
 	void saveFile();
 private:
     Ui::MainWindow* ui;

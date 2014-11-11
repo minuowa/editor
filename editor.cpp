@@ -32,9 +32,13 @@ Editor::Editor ( QWidget *parent, Qt::WindowType flags )
     //view
     //-------------------------------------------------------------------------
 	mAssistMenu = menuBar()->addMenu ( tr ( "&Assist" ) );
-	mAssistMenu->addAction ( tr ( "&NextCamera(F3)" ), this, SLOT ( changeToNextCamera() ));
+	mAssistMenu->addAction ( tr ( "&ChangeToNextCamera(F3)" ), this, SLOT ( changeToNextCamera() ));
 	QShortcut* shortcut = new QShortcut ( QKeySequence ( Qt::Key_F3), this );
 	connect ( shortcut, SIGNAL ( activated() ), this, SLOT ( changeToNextCamera() ) );
+
+	mAssistMenu->addAction ( tr ( "&MoveToNextCamera(F4)" ), this, SLOT ( moveToNextCamera() ));
+	shortcut = new QShortcut ( QKeySequence ( Qt::Key_F4), this );
+	connect ( shortcut, SIGNAL ( activated() ), this, SLOT ( moveToNextCamera() ) );
 
     viewMenu = menuBar()->addMenu ( tr ( "&View" ) );
 
@@ -145,6 +149,11 @@ void Editor::saveFile()
 void Editor::changeToNextCamera()
 {
 	TheSceneMgr->changeToNextCamera();
+}
+
+void Editor::moveToNextCamera()
+{
+	TheSceneMgr->moveToNextCamera();
 }
 
 

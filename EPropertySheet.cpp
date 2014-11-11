@@ -22,6 +22,11 @@ void toQVariant ( CXProp* prop, QVariant& var )
         var = * ( ( int* ) ( ( CXPropEntity<int>* ) prop )->mVar );
     }
     break;
+	case eType_UInt:
+	{
+		var = * ( ( unsigned int* ) ( ( CXPropEntity<unsigned int>* ) prop )->mVar );
+	}
+	break;
     case eType_Float:
     {
         var = * ( ( float* ) ( ( CXPropEntity<float>* ) prop )->mVar );
