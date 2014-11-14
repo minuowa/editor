@@ -69,11 +69,11 @@ EPropertySheet::EPropertySheet ( QWidget* parent/*=0*/ )
 
     mDelegate = new EPropertySheetDelegate;
     mTreeView->setItemDelegate ( mDelegate );
-    mTreeView->setBaseSize ( 350, 300 );
+    mTreeView->setBaseSize ( 400, 340 );
     QSizePolicy sizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
     mTreeView->setSizePolicy ( sizePolicy );
     mTreeView->setAcceptDrops ( true );
-    mTreeView->setColumnWidth ( 0, 150 );
+	mTreeView->setColumnWidth ( 0, 200 );
 }
 
 void EPropertySheet::show()
@@ -128,7 +128,7 @@ void EPropertySheet::clearPropertyies()
 {
     clearData();
     mTreeModel->setColumnCount ( 2 );
-    mTreeView->setColumnWidth ( 0, 160 );
+	mTreeView->setColumnWidth ( 0, 200 );
 }
 
 void EPropertySheet::addProperty ( const char* categoryName, const char* propName, EPropertyVar* propVar )

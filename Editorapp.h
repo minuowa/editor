@@ -8,7 +8,7 @@
 extern "C"
 {
 	typedef int ( *Game_Init ) ( HWND );
-	typedef void ( *Game_Update ) ();
+	typedef bool ( *Game_Update ) ();
 	typedef void ( *Game_ShutDown ) ();
 };
 
@@ -33,12 +33,13 @@ public:
     {
         mBackShutDown = shutdown;
     }
-    void updateGame()
+	bool updateGame()
     {
         if ( mBackUpdate )
         {
-            mBackUpdate();
+            return mBackUpdate();
         }
+		return false;
     }
 };
 

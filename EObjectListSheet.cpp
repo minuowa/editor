@@ -119,7 +119,7 @@ void EObjectListSheet::updateAll()
 {
     clearTreeItem();
 
-    GNode* root = TheGame->getSceneMgr()->getSceneRoot();
+    auto root = TheGame->getSceneMgr()->getSceneRoot();
     QStandardItem* rootItem = mTreeModel->item ( 0, 0 );
     if ( rootItem == nullptr )
     {
