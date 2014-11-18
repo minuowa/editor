@@ -106,12 +106,12 @@ void EObjectListSheet::onCallBack ( const CXDelegate& delgate )
 {
     if ( delgate == GNode::mDelegateAddObj )
     {
-        updateItemByAddObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getObjectName() : nullptr,
-                             GNode::mOperatorParentObj ? GNode::mOperatorParentObj->getObjectName() : nullptr );
+        updateItemByAddObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getName() : nullptr,
+                             GNode::mOperatorParentObj ? GNode::mOperatorParentObj->getName() : nullptr );
     }
     else if ( delgate == GNode::mDelegateDeleteObj )
     {
-        updateItemByDeleteObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getObjectName() : nullptr );
+        updateItemByDeleteObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getName() : nullptr );
     }
 }
 
@@ -132,7 +132,7 @@ void EObjectListSheet::updateAll()
 void EObjectListSheet::addChild ( GNode* node, QStandardItem* item )
 {
     item->setEditable ( false );
-    item->setText ( node->getObjectName() );
+    item->setText ( node->getName() );
 
     size_t cnt = node->mChildren.size();
 

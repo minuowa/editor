@@ -125,7 +125,7 @@ void EObjListSheetTreeView::updateMenus()
         GComponentInterface* component = owner.getComponent ( ( eComponentType ) i );
         if ( component )
         {
-            setComponentMenuState ( component->GetComponentName(), true, component->canDetach()  );
+            setComponentMenuState ( component->getComponentName(), true, component->canDetach()  );
         }
     }
 }
