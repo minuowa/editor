@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Game.h"
 #include "EEditorManager.h"
 #include "EPropertySheet.h"
 #include "EObjectListSheet.h"
@@ -8,7 +9,6 @@
 #include "qmenubar.h"
 #include "qcoreapplication.h"
 #include "qapplication.h"
-#include "Game.h"
 #include "editor.h"
 #include "QDockWidget.h"
 #include "qcombobox.h"
@@ -109,7 +109,7 @@ void EEditorManager::notifyPropertyChange ( void* pre, void* changed )
 {
     const QString& name = getSelectObj();
 
-    GNode* node = TheSceneMgr->getNodeByName ( name.toStdString().c_str() );
+    GNode* node = TheSceneMgr->getObj ( name.toStdString().c_str() );
     if ( node )
         node->onPropertyChange ( pre, changed );
 }
@@ -132,7 +132,7 @@ void EEditorManager::onCallBack ( const CXDelegate& xdelegate )
 {
     if ( xdelegate == GNode::mDelegateComponentChange )
     {
-        GNode* target = TheSceneMgr->getNodeByName ( mSelectedObj.toStdString().c_str() );
+        GNode* target = TheSceneMgr->getObj ( mSelectedObj.toStdString().c_str() );
 
         if ( target != nullptr )
         {
@@ -161,7 +161,7 @@ void EEditorManager::updatePopMenu()
 
 void EEditorManager::updatePropertySheet()
 {
-    GNode* target = TheSceneMgr->getNodeByName ( mSelectedObj.toStdString().c_str() );
+    GNode* target = TheSceneMgr->getObj ( mSelectedObj.toStdString().c_str() );
     if ( !target )
     {
         mObjectPropertySheet->clearPropertyies();
@@ -176,7 +176,7 @@ void EEditorManager::notifyPropertyChangeEnd ( void* cur )
 {
     const QString& name = getSelectObj();
 
-    GNode* node = TheSceneMgr->getNodeByName ( name.toStdString().c_str() );
+    GNode* node = TheSceneMgr->getObj ( name.toStdString().c_str() );
     if ( node )
         node->onPropertyChangeEnd ( cur );
 

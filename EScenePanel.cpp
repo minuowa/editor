@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "EScenePanel.h"
 #include "Game.h"
 EScenePanel::EScenePanel(QWidget *parent)

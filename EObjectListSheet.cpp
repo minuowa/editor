@@ -58,7 +58,7 @@ void EObjectListSheet::updateItemByAddObj ( const char* name, const char* parent
 			return;
 		}
         CXASSERT_RETURN ( parent );
-        mTreeModel->setRowCount ( mTreeModel->rowCount() + 1 );
+        //mTreeModel->setRowCount ( mTreeModel->rowCount() + 1 );
         parent->appendRow ( newobj );
     }
     else

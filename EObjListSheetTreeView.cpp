@@ -98,7 +98,7 @@ void EObjListSheetTreeView::onComponentAction ( QAction* action )
     QString componentTypeName = action->text();
     const QString& name = EditorMgr->getSelectObj();
 
-    GNode* node = TheSceneMgr->getNodeByName ( name.toStdString().c_str() );
+    GNode* node = TheSceneMgr->getObj ( name.toStdString().c_str() );
     CXASSERT ( node );
     if ( action->isChecked() )
     {
@@ -113,7 +113,7 @@ void EObjListSheetTreeView::onComponentAction ( QAction* action )
 void EObjListSheetTreeView::updateMenus()
 {
     QString name = EditorMgr->getSelectObj();
-    GNode* target = TheSceneMgr->getNodeByName ( name.toStdString().c_str() );
+    GNode* target = TheSceneMgr->getObj ( name.toStdString().c_str() );
     CXASSERT ( target );
 
     resetComponentMenuState();

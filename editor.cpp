@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "editor.h"
 #include "QMenu.h"
 #include "QMenubar.h"
