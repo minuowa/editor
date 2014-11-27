@@ -14,4 +14,8 @@
     <LocalDebuggerWorkingDirectory>..\release\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GDebug|Win32'">
+    <QTDIR>D:\Qt\Qt5.3.2\5.3\msvc2012_opengl</QTDIR>
+    <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
+  </PropertyGroup>
 </Project>

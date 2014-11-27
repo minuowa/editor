@@ -60,23 +60,23 @@
 EPropertySheetDelegate::EPropertySheetDelegate ( QObject *parent )
     : QItemDelegate ( parent )
 {
-    connect ( this, SIGNAL ( commitData ( QWidget* )), this, SLOT ( onDataChange (  QWidget* ) ) );
+    connect ( this, SIGNAL ( commitData ( QWidget* ) ), this, SLOT ( onDataChange (  QWidget* ) ) );
 }
 //! [0]
 
 //! [1]
-          QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
-                  const QStyleOptionViewItem & option ,
-                  const QModelIndex & index ) const
+QWidget *EPropertySheetDelegate::createEditor ( QWidget *parent,
+        const QStyleOptionViewItem & option ,
+        const QModelIndex & index ) const
 {
     QVariant var = index.model()->data ( index, Qt::EditRole );
 
     QStandardItemModel* mymode = ( QStandardItemModel* ) ( index.model() );
     EPropertySheetTreeItem* item = dynamic_cast<EPropertySheetTreeItem*> ( mymode->itemFromIndex ( index ) );
     /** @brief the item behind category is null **/
-	if(!item)
-		return nullptr;
-	EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
+    if ( !item )
+        return nullptr;
+    EPropertyVar* propVar = ( EPropertyVar* ) item->mPtr;
     CXProp* propBase = propVar->mProp;
 
     QWidget* widget = 0;
@@ -90,14 +90,14 @@ EPropertySheetDelegate::EPropertySheetDelegate ( QObject *parent )
         widget = editor;
     }
     break;
-	case eType_UInt:
-		{
-			QSpinBox *editor = new QSpinBox ( parent );
-			editor->setMaximum ( INT_MAX );
-			editor->setMinimum ( 0 );
-			widget = editor;
-		}
-		break;
+    case eType_UInt:
+    {
+        QSpinBox *editor = new QSpinBox ( parent );
+        editor->setMaximum ( INT_MAX );
+        editor->setMinimum ( 0 );
+        widget = editor;
+    }
+    break;
     case eType_Bool:
     {
         QCheckBox *editor = new QCheckBox ( parent );
@@ -168,12 +168,12 @@ void EPropertySheetDelegate::setEditorData ( QWidget *editor,
         curEditor->setValue ( var.toInt() );
     }
     break;
-	case eType_UInt:
-		{
-			QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
-			curEditor->setValue ( var.toUInt() );
-		}
-		break;
+    case eType_UInt:
+    {
+        QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
+        curEditor->setValue ( var.toUInt() );
+    }
+    break;
     case eType_Bool:
     {
         QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
@@ -243,16 +243,16 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
-	case eType_UInt:
-		{
-			QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
-			unsigned int prop = (unsigned int)curEditor->value();
-			model->setData ( index, prop, Qt::EditRole );
-			EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
-			dCast ( propVar->mPtr, prop );
-			EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
-		}
-		break;
+    case eType_UInt:
+    {
+        QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
+        unsigned int prop = ( unsigned int ) curEditor->value();
+        model->setData ( index, prop, Qt::EditRole );
+        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        dCast ( propVar->mPtr, prop );
+        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+    }
+    break;
     case eType_Bool:
     {
         QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
@@ -313,26 +313,27 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
 void EPropertySheetDelegate::updateEditorGeometry ( QWidget *editor,
         const QStyleOptionViewItem &option, const QModelIndex & index ) const
 {
-    QVariant var = index.model()->data ( index, Qt::EditRole );
-    switch ( var.type() )
-    {
-    case QMetaType::Bool:
-    {
-        QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
-        QRect rc;
-        rc.setRight ( option.rect.right() - 1 );
-        rc.setLeft ( rc.right() - curEditor->rect().width() );
-        rc.setTop ( option.rect.top() + 1 );
-        rc.setBottom ( option.rect.bottom() - 1 );
-        curEditor->setGeometry ( rc );
-    }
-    break;
-    default:
-    {
-        editor->setGeometry ( option.rect );
-    }
-    break;
-    }
+    __super::updateEditorGeometry ( editor, option, index );
+    //QVariant var = index.model()->data ( index, Qt::EditRole );
+    //switch ( var.type() )
+    //{
+    //case QMetaType::Bool:
+    //{
+    //    QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
+    //    QRect rc;
+    //    rc.setRight ( option.rect.right() - 1 );
+    //    rc.setLeft ( rc.right() - curEditor->rect().width() );
+    //    rc.setTop ( option.rect.top() + 1 );
+    //    rc.setBottom ( option.rect.bottom() - 1 );
+    //    curEditor->setGeometry ( rc );
+    //}
+    //break;
+    //default:
+    //{
+    //    editor->setGeometry ( option.rect );
+    //}
+    //break;
+    //}
 }
 
 void EPropertySheetDelegate::onDataChange ( QWidget *editor )

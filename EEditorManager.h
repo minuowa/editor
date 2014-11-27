@@ -11,6 +11,7 @@ class QMenu;
 class QMainWindow;
 class QAction;
 class Editor;
+class EFilmSheet;
 class  EEditorManager: public QObject, public CXCallBack
 {
     Q_OBJECT
@@ -47,13 +48,13 @@ protected:
     EPropertySheet* mObjectPropertySheet;
     EPropertySheet* mOptionSheet;
     EObjectListSheet* mObjectListSheet;
-
+	EFilmSheet* mFilmSheet;
     void* mWindowProc;
     QMainWindow* mParent;
     QString mSelectedObj;
 
 public:
-    virtual void onCallBack ( const CXDelegate& );
+	virtual void onCallBack ( const CXDelegate& , CXEventArgs*  )override;
 
 };
 

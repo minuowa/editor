@@ -12,6 +12,7 @@
 #include "EScenePanel.h"
 #include "GGame.h"
 #include "qshortcut.h"
+static const int gMinWidth=250;
 Editor::Editor ( QWidget *parent, Qt::WindowType flags )
     : QMainWindow ( parent, flags )
     , mIdleTimeID ( 0 )
@@ -48,7 +49,7 @@ Editor::Editor ( QWidget *parent, Qt::WindowType flags )
 
     mObjectPropertyPanel = new QDockWidget ( tr ( "ObjectProperty" ), this );
     mObjectPropertyPanel->setAllowedAreas ( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    mObjectPropertyPanel->setMinimumWidth ( 200 );
+    mObjectPropertyPanel->setMinimumWidth ( gMinWidth );
     mObjectPropertyPanel->setMinimumHeight ( 200 );
     viewMenu->addAction ( mObjectPropertyPanel->toggleViewAction() );
     addDockWidget ( Qt::RightDockWidgetArea, mObjectPropertyPanel );
@@ -62,10 +63,17 @@ Editor::Editor ( QWidget *parent, Qt::WindowType flags )
 
     mOptionPanel = new QDockWidget ( tr ( "Option" ), this );
     mOptionPanel->setAllowedAreas ( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    mOptionPanel->setMinimumWidth ( 300 );
+    mOptionPanel->setMinimumWidth ( gMinWidth );
     mOptionPanel->setMinimumHeight ( 200 );
     viewMenu->addAction ( mOptionPanel->toggleViewAction() );
     addDockWidget ( Qt::LeftDockWidgetArea, mOptionPanel );
+
+    mFilmPanel = new QDockWidget ( tr ( "Film" ), this );
+    mFilmPanel->setAllowedAreas ( Qt::AllDockWidgetAreas );
+    mFilmPanel->setMinimumWidth ( gMinWidth );
+    mFilmPanel->setMinimumHeight ( 400 );
+    viewMenu->addAction ( mFilmPanel->toggleViewAction() );
+    addDockWidget ( Qt::RightDockWidgetArea, mFilmPanel );
 
     mIdleTimeID = startTimer ( 0 );
 
@@ -97,12 +105,12 @@ void Editor::timerEvent ( QTimerEvent * timeevent )
 void Editor::openFile()
 {
     QString filePath = QFileDialog::getOpenFileName ( this, tr ( "Open File" ),
-                       curSceneFile, tr ( "XML files (*.xml);;" ) );
+                       mcurSceneFile, tr ( "XML files (*.xml);;" ) );
 
     if ( !filePath.isEmpty() )
     {
-        curSceneFile = filePath;
-        TheSceneMgr->loadScene ( curSceneFile.toStdString().c_str() );
+        mcurSceneFile = filePath;
+        TheSceneMgr->loadScene ( mcurSceneFile.toStdString().c_str() );
     }
 }
 
@@ -121,17 +129,12 @@ void Editor::setFocus ( Qt::FocusReason reason )
 void Editor::mouseMoveEvent ( QMouseEvent * mouseEvent )
 {
     __super::mouseMoveEvent ( mouseEvent );
-    int n = mouseEvent->pos().rx();
 }
 
 bool Editor::event ( QEvent* event )
 {
     switch ( event->type() )
     {
-    case QEvent::MouseMove:
-    {
-    }
-    break;
     case  QEvent::WindowActivate:
     {
         TheGame->active ( true );
@@ -151,12 +154,12 @@ bool Editor::event ( QEvent* event )
 void Editor::saveFile()
 {
     QString filePath = QFileDialog::getOpenFileName ( this, tr ( "Save File" ),
-                       curSceneFile, tr ( "XML files (*.xml);;" ) );
+                       mcurSceneFile, tr ( "XML files (*.xml);;" ) );
 
     if ( !filePath.isEmpty() )
     {
-        curSceneFile = filePath;
-        TheSceneMgr->saveScene ( curSceneFile.toStdString().c_str() );
+        mcurSceneFile = filePath;
+        TheSceneMgr->saveScene ( mcurSceneFile.toStdString().c_str() );
     }
 }
 

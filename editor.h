@@ -37,8 +37,9 @@ private:
     QDockWidget* mObjectPropertyPanel;
     QDockWidget* mObjectListPanel;
     QDockWidget* mOptionPanel;
+    QDockWidget* mFilmPanel;
     QWidget* mScenePanel;
-    QString curSceneFile;
+    QString mcurSceneFile;
 
     int  mIdleTimeID;
 public:
@@ -57,6 +58,10 @@ public:
     QWidget* getScenePanel() const
     {
         return  mScenePanel;
+    }
+    QDockWidget* getFilmPanel() const
+    {
+        return  mFilmPanel;
     }
 };
 

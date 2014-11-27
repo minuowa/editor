@@ -26,7 +26,8 @@ public:
     {
         if (EScenePanel->objectName().isEmpty())
             EScenePanel->setObjectName(QStringLiteral("EScenePanel"));
-        EScenePanel->resize(400, 300);
+        EScenePanel->resize(480, 320);
+        EScenePanel->setMinimumSize(QSize(480, 320));
 
         retranslateUi(EScenePanel);
 

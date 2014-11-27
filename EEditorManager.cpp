@@ -12,6 +12,7 @@
 #include "editor.h"
 #include "QDockWidget.h"
 #include "qcombobox.h"
+#include "EFilmSheet.h"
 //-------------------------------------------------------------------------
 EEditorManager::EEditorManager ( void )
     : mWindowProc ( 0 )
@@ -36,38 +37,22 @@ bool EEditorManager::init ( Editor* parent )
     mOptionSheet = new EPropertySheet ( parent->getOptionPanel() );
     parent->getOptionPanel()->setWidget ( mOptionSheet->getView() );
 
-    if ( 0 )
-    {
-        QComboBox* pbox = new QComboBox ( mOptionSheet->getView() );
-        pbox->setGeometry ( 20, 100, 50, 30 );
-        pbox->addItem ( "1" );
-        pbox->addItem ( "2" );
-        pbox->addItem ( "3" );
-        pbox->addItem ( "4" );
-        pbox->setCurrentText ( "3" );
-        pbox->setCurrentIndex ( 1 );
-    }
-
+    mFilmSheet = new EFilmSheet ( mParent );
+    parent->getFilmPanel()->setWidget ( ( QWidget* ) mFilmSheet );
 
     mObjectListSheet = new EObjectListSheet ( mParent );
     parent->getObjectListPanel()->setWidget ( mObjectListSheet->getView() );
 
-
     initObjectMenu ( TheSceneMgr->getGameObjectTypes() );
     mObjectListSheet->getView()->initComponentMenu ( TheSceneMgr->getObjectComponentTypes() );
-
-    //mComponentMenu->hide();
 
     GNode::mDelegateComponentChange += this;
     GObject::mDelegateAlterName += this;
     TheSceneMgr->mDelegateReloadScene += this;
 
     updateOptionSheet();
-
     updateObjectList();
 
-    //mOptionSheet->hide();
-    //mObjectPropertySheet->hide();
 
     return true;
 }
@@ -94,7 +79,7 @@ EObjectListSheet* EEditorManager::getObjectListSheet() const
 
 void EEditorManager::initObjectMenu ( const CharStringArr& gameobjTypeArr )
 {
-	mObjectListSheet->getView()->initObjectMenu ( gameobjTypeArr );
+    mObjectListSheet->getView()->initObjectMenu ( gameobjTypeArr );
 }
 
 void EEditorManager::setComponentMenuState ( const char* componentType, bool checked, bool enabled )
@@ -128,15 +113,15 @@ void EEditorManager::SetSelectObj ( const char* obj )
     updatePopMenu();
 }
 
-void EEditorManager::onCallBack ( const CXDelegate& xdelegate )
+void EEditorManager::onCallBack ( const CXDelegate& xdelegate, CXEventArgs* args )
 {
     if ( xdelegate == GNode::mDelegateComponentChange )
     {
-        GNode* target = TheSceneMgr->getObj ( mSelectedObj.toStdString().c_str() );
+        GNodeComponentChangeArgs* arg = ( GNodeComponentChangeArgs* ) args;
 
-        if ( target != nullptr )
+        if ( !arg->mChangedNode.empty() )
         {
-            if ( GNode::mOperatorObj == target )
+            if ( 0 == arg->mChangedNode.compare ( mSelectedObj.toStdString().c_str() ) )
             {
                 updatePopMenu();
                 updatePropertySheet();
@@ -145,7 +130,8 @@ void EEditorManager::onCallBack ( const CXDelegate& xdelegate )
     }
     else if ( xdelegate == GObject::mDelegateAlterName )
     {
-        mObjectListSheet->alterItemName ( GObject::mOperatorObjectName, GObject::mTargetName );
+        CXAlterNameArgs* arg = ( CXAlterNameArgs* ) args;
+        mObjectListSheet->alterItemName ( arg->mCurName, arg->mChangedName );
     }
     else if ( xdelegate == TheSceneMgr->mDelegateReloadScene )
     {
@@ -200,12 +186,12 @@ void EEditorManager::clearSelect()
 
 const QString& EEditorManager::getSelectObj() const
 {
-	return mSelectedObj;
+    return mSelectedObj;
 }
 
 EPropertySheet* EEditorManager::getPropertySheet() const
 {
-	return mObjectPropertySheet;
+    return mObjectPropertySheet;
 }
 
 

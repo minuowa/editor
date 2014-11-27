@@ -52,11 +52,11 @@ void EObjectListSheet::updateItemByAddObj ( const char* name, const char* parent
         {
             parent = getItem ( parentName );
         }
-		if(!parent)
-		{
-			dSafeDelete(newobj);
-			return;
-		}
+        if ( !parent )
+        {
+            dSafeDelete ( newobj );
+            return;
+        }
         CXASSERT_RETURN ( parent );
         //mTreeModel->setRowCount ( mTreeModel->rowCount() + 1 );
         parent->appendRow ( newobj );
@@ -75,7 +75,7 @@ QStandardItem* EObjectListSheet::getItem ( const char* name )
 {
     QStandardItem* item = 0;
     QStandardItem* root = mTreeModel->item ( 0, 0 );
-    findItem ( root, name, item );
+    eFindItem ( root, name, item );
     return item;
 }
 
@@ -102,16 +102,18 @@ void EObjectListSheet::onSelectionChanged ( const QItemSelection &selected, cons
     }
 }
 
-void EObjectListSheet::onCallBack ( const CXDelegate& delgate )
+void EObjectListSheet::onCallBack ( const CXDelegate& delgate, CXEventArgs* args )
 {
     if ( delgate == GNode::mDelegateAddObj )
     {
-        updateItemByAddObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getName() : nullptr,
-                             GNode::mOperatorParentObj ? GNode::mOperatorParentObj->getName() : nullptr );
+        GNodeAddArgs* arg = ( GNodeAddArgs* ) args;
+
+        updateItemByAddObj ( arg->mAddNode, arg->mAddNodeParent );
     }
     else if ( delgate == GNode::mDelegateDeleteObj )
     {
-        updateItemByDeleteObj ( GNode::mOperatorObj ? GNode::mOperatorObj->getName() : nullptr );
+        GNodeDeleteArgs* arg = ( GNodeDeleteArgs* ) args;
+        updateItemByDeleteObj ( arg->mDeleteNode );
     }
 }
 
@@ -190,7 +192,7 @@ bool EObjectListSheet::getItemPosition ( int& r, int& c, const char* text )
 {
     int row = mTreeModel->rowCount();
     int col = mTreeModel->columnCount();
-    QStandardItem* item = 0;
+    //QStandardItem* item = 0;
     for ( int i = 0; i < row; ++i )
     {
         for ( int j = 0; j < col; ++j )
@@ -215,38 +217,7 @@ bool EObjectListSheet::getItemPosition ( int& r, int& c, const char* text )
     return false;
 }
 
-void EObjectListSheet::findItem ( QStandardItem* parent, const char* name, QStandardItem*& res )
-{
-    if ( !parent )
-    {
-        return;
-    }
-    if ( parent->hasChildren() )
-    {
-        int row = parent->rowCount();
-        int col = parent->columnCount();
 
-        for ( int i = 0; i < row; ++i )
-        {
-            for ( int j = 0; j < col; ++j )
-            {
-                QStandardItem* item = parent->child ( i, j );
-                if ( item )
-                {
-                    if ( item->text() == name )
-                    {
-                        res = item;
-                        return;
-                    }
-                    else
-                    {
-                        findItem ( item, name, res );
-                    }
-                }
-            }
-        }
-    }
-}
 
 void EObjectListSheet::deleteItem ( QStandardItem* parent, const char* name )
 {

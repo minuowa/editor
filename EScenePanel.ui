@@ -1,23 +1,26 @@
-<UI version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>EScenePanel</class>
- <widget class="QWidget" name="EScenePanel" >
-  <property name="objectName" >
-   <string notr="true">EScenePanel</string>
-  </property>
-  <property name="geometry" >
+ <widget class="QWidget" name="EScenePanel">
+  <property name="geometry">
    <rect>
-	<x>0</x>
-	<y>0</y>
-	<width>400</width>
-	<height>300</height>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>320</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="minimumSize">
+   <size>
+    <width>480</width>
+    <height>320</height>
+   </size>
+  </property>
+  <property name="windowTitle">
    <string>EScenePanel</string>
-  </property>  
+  </property>
  </widget>
- <layoutDefault spacing="1" margin="1" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="1" margin="1"/>
  <resources/>
  <connections/>
-</UI>
+</ui>

@@ -32,14 +32,13 @@ protected:
 	void updateItemByDeleteObj ( const char* name);
 	void addChild(GNode* node,QStandardItem* item);
 	QStandardItem* getItem ( const char* name );
-	static void findItem ( QStandardItem* parent, const char* name, QStandardItem*& res );
 	static void deleteItem ( QStandardItem* parent, const char* name);
 
 	bool getItemPosition(int& row,int& col,const char* text);
 	void onSelect ( const QModelIndex& index );
 
-	virtual void onCallBack(const CXDelegate& delgate);
-public slots:
+	virtual void onCallBack ( const CXDelegate& , CXEventArgs*  )override;
+	public slots:
     void onSelectionChanged ( const QItemSelection &selected, const QItemSelection &deselected );
 private:
     QTreeView* mTreeView;
