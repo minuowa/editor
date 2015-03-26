@@ -2,7 +2,7 @@
 #define stdafx_h__
 #include "game.h"
 #include "qstandarditemmodel.h"
-
+#include "Content.h"
 void eFindItem ( QStandardItem* parent, const char* name, QStandardItem*& res );
 
 #endif // stdafx_h__

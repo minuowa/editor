@@ -25,7 +25,7 @@ public:
     QTreeView* getObjectListView() const;
     EObjectListSheet* getObjectListSheet() const;
 
-    void initObjectMenu ( const CharStringArr& gameobjTypeArr );
+    void initObjectMenu ( );
     void setComponentMenuState ( const char* componentType, bool checked, bool enabled );
 
     void notifyPropertyChange ( void* pre, void* changed );

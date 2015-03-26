@@ -110,7 +110,7 @@ void Editor::openFile()
     if ( !filePath.isEmpty() )
     {
         mcurSceneFile = filePath;
-        TheSceneMgr->loadScene ( mcurSceneFile.toStdString().c_str() );
+         Content::Scene.loadScene ( mcurSceneFile.toStdString().c_str() );
     }
 }
 
@@ -137,12 +137,12 @@ bool Editor::event ( QEvent* event )
     {
     case  QEvent::WindowActivate:
     {
-        TheGame->active ( true );
+         Content::Game.active ( true );
     }
     break;
     case QEvent::WindowDeactivate :
     {
-        TheGame->active ( false );
+         Content::Game.active ( false );
     }
     break;
     default:
@@ -159,18 +159,18 @@ void Editor::saveFile()
     if ( !filePath.isEmpty() )
     {
         mcurSceneFile = filePath;
-        TheSceneMgr->saveScene ( mcurSceneFile.toStdString().c_str() );
+         Content::Scene.saveScene ( mcurSceneFile.toStdString().c_str() );
     }
 }
 
 void Editor::changeToNextCamera()
 {
-    TheSceneMgr->changeToNextCamera();
+     Content::Scene.changeToNextCamera();
 }
 
 void Editor::moveToNextCamera()
 {
-    TheSceneMgr->moveToNextCamera();
+     Content::Scene.moveToNextCamera();
 }
 
 

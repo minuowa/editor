@@ -10,8 +10,8 @@ class EObjListSheetTreeView :
 public:
     EObjListSheetTreeView ( QWidget *parent = 0 );
     ~EObjListSheetTreeView ( void );
-	void initComponentMenu ( const CharStringArr& componentTypeArr );
-	void initObjectMenu ( const CharStringArr& gameobjTypeArr );
+	void initComponentMenu ();
+	void initObjectMenu ( );
 	void updateMenus();
 	void setComponentMenuState ( const char* componentType, bool checked, bool enabled );
 	void resetComponentMenuState();

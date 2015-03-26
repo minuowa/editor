@@ -54,8 +54,7 @@ void EPropertyTreeView::dropEvent ( QDropEvent *event )
                 static const char* fileFlag = "file:///";
                 str = str.substr ( strlen ( fileFlag ), -1 );
                 CXFileName path ( str.c_str() );
-                GString relname;
-                path.GetRelativeFileName ( relname );
+                GString relname = path.GetRelativeFileName (  );
                 model()->setData ( idx, relname.c_str() );
             }
         }
@@ -78,8 +77,7 @@ void EPropertyTreeView::dropEvent ( QDropEvent *event )
             {
                 text = text.right ( text.length() - 1 );
                 CXFileName path ( text.toStdString().c_str() );
-                GString relname;
-                path.GetRelativeFileName ( relname );
+                GString relname = path.GetRelativeFileName ( );
                 model()->setData ( idx, relname.c_str() );
             }
         }

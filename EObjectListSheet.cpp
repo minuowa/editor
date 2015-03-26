@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "qshortcut.h"
 #include "qkeysequence.h"
+#include "Editorapp.h"
 EObjectListSheet::EObjectListSheet ( QWidget *parent/*=0*/ )
     : QObject ( parent )
 {
@@ -90,7 +91,7 @@ void EObjectListSheet::onSelect ( const QModelIndex& index )
     if ( var.type() != QVariant::String )
         return;
 
-    EditorMgr->SetSelectObj ( var.toString().toStdString().c_str() );
+    EditorApp::Editor.SetSelectObj ( var.toString().toStdString().c_str() );
 }
 
 void EObjectListSheet::onSelectionChanged ( const QItemSelection &selected, const QItemSelection &/*deselected*/ )
@@ -121,7 +122,7 @@ void EObjectListSheet::updateAll()
 {
     clearTreeItem();
 
-    auto root = TheGame->getSceneMgr()->getSceneRoot();
+    auto root =  Content::Scene.getSceneRoot();
     QStandardItem* rootItem = mTreeModel->item ( 0, 0 );
     if ( rootItem == nullptr )
     {
@@ -151,7 +152,7 @@ void EObjectListSheet::addChild ( GNode* node, QStandardItem* item )
 
 void EObjectListSheet::addChildByType ( const char* typeName )
 {
-    TheSceneMgr->addObj ( EditorMgr->getSelectObj().toStdString().c_str(), typeName );
+     Content::Scene.addObj ( EditorApp::Editor.getSelectObj().toStdString().c_str(), typeName );
 }
 
 void EObjectListSheet::alterItemName ( const char* oldName, const char* targetName )
@@ -161,7 +162,7 @@ void EObjectListSheet::alterItemName ( const char* oldName, const char* targetNa
     QStandardItem* item = getItem ( oldName );
     CXASSERT ( item );
     item->setText ( targetName );
-    //EditorMgr->SetSelectObj ( targetName );
+    //EditorApp::Editor.SetSelectObj ( targetName );
 }
 
 void EObjectListSheet::clearTreeItem()

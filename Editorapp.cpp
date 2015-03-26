@@ -5,14 +5,18 @@
 
 EditorApp::EditorApp ( int &argc, char **argv, int flag )
     : QApplication ( argc, argv, flag )
-    , mBackUpdate ( 0 )
-    , mBackShutDown ( 0 )
 {
 }
 
 EditorApp::~EditorApp()
 {
-    if ( mBackShutDown )
-        mBackShutDown();
+    Content::Game.shutDown();
 }
+
+bool EditorApp::updateGame()
+{
+	return Content::Game.loop();
+}
+
+EEditorManager EditorApp::Editor;
 

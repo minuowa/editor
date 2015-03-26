@@ -36,8 +36,8 @@ EFilmSheet::EFilmSheet ( QWidget *parent )
     mPopMenu->addAction ( tr ( "Delete" ), this, SLOT ( deleteFrame() ) );
     mPopMenu->addAction ( tr ( "Play" ), this, SLOT ( playFrame() ) );
 
-    FilmPlayer->mDelegateAddFrame += this;
-    FilmPlayer->mDelegateDeleteFrame += this;
+     Content::FilmPlayer.mDelegateAddFrame += this;
+     Content::FilmPlayer.mDelegateDeleteFrame += this;
 }
 
 EFilmSheet::~EFilmSheet()
@@ -45,8 +45,8 @@ EFilmSheet::~EFilmSheet()
     dSafeDelete ( ui );
     QAbstractItemDelegate * d = mFrameList->itemDelegate();
     dSafeDelete ( d );
-    FilmPlayer->mDelegateAddFrame -= this;
-    FilmPlayer->mDelegateDeleteFrame -= this;
+     Content::FilmPlayer.mDelegateAddFrame -= this;
+     Content::FilmPlayer.mDelegateDeleteFrame -= this;
 }
 
 void EFilmSheet::onFileNew()
@@ -66,7 +66,6 @@ void EFilmSheet::onFileSave()
 
 void EFilmSheet::onPlay()
 {
-
 }
 
 void EFilmSheet::onPause()
@@ -104,7 +103,7 @@ void EFilmSheet::addFrame()
         assert ( var.type() == QVariant::String );
         prev = var.toString().toStdString().c_str();
     }
-    FilmPlayer->addFrameBehind ( prev );
+     Content::FilmPlayer.addFrameBehind ( prev );
 }
 
 void EFilmSheet::deleteFrame()
@@ -115,14 +114,20 @@ void EFilmSheet::deleteFrame()
     {
         QVariant var = mFrameList->model()->data ( index );
         assert ( var.type() == QVariant::String );
-        FilmPlayer->deleteFrame ( var.toString().toStdString().c_str() );
+         Content::FilmPlayer.deleteFrame ( var.toString().toStdString().c_str() );
         updateItemBack ( model );
     }
 }
 
 void EFilmSheet::playFrame()
 {
-
+    QModelIndex index = mFrameList->currentIndex();
+    if ( index.isValid() )
+    {
+        QVariant var = mFrameList->model()->data ( index );
+        assert ( var.type() == QVariant::String );
+         Content::FilmPlayer.play ( var.toString().toStdString().c_str() );
+    }
 }
 void updateItemBack ( QStandardItemModel* model )
 {
@@ -147,7 +152,7 @@ void updateItemBack ( QStandardItemModel* model )
 }
 void EFilmSheet::onCallBack ( const CXDelegate& d, CXEventArgs* arg )
 {
-    if ( d == FilmPlayer->mDelegateAddFrame )
+    if ( d ==  Content::FilmPlayer.mDelegateAddFrame )
     {
         QStandardItemModel* model = ( QStandardItemModel* ) mFrameList->model();
         QStandardItem* itemBrother = nullptr;
@@ -171,7 +176,7 @@ void EFilmSheet::onCallBack ( const CXDelegate& d, CXEventArgs* arg )
             updateItemBack ( model );
         }
     }
-    else if ( d == FilmPlayer->mDelegateDeleteFrame )
+    else if ( d ==  Content::FilmPlayer.mDelegateDeleteFrame )
     {
         GFilmDeleteFrameEvent* args = ( GFilmDeleteFrameEvent* ) arg;
         QStandardItemModel* model = ( QStandardItemModel* ) mFrameList->model();

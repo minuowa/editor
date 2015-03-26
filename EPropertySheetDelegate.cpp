@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "qlineedit.h"
 #include "qcombobox.h"
+#include "Editorapp.h"
 /****************************************************************************
 **
 ** Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
@@ -238,9 +239,9 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
         int prop = curEditor->value();
         model->setData ( index, prop, Qt::EditRole );
-        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        EditorApp::Editor.notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
-        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+        EditorApp::Editor.notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
     case eType_UInt:
@@ -248,9 +249,9 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         QSpinBox *curEditor = static_cast<QSpinBox*> ( editor );
         unsigned int prop = ( unsigned int ) curEditor->value();
         model->setData ( index, prop, Qt::EditRole );
-        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        EditorApp::Editor.notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
-        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+        EditorApp::Editor.notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
     case eType_Bool:
@@ -258,9 +259,9 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         QCheckBox *curEditor = static_cast<QCheckBox*> ( editor );
         bool prop = curEditor->checkState() == Qt::Checked ? true : false;
         model->setData ( index, prop, Qt::EditRole );
-        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        EditorApp::Editor.notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
-        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+        EditorApp::Editor.notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
     case eType_String:
@@ -268,9 +269,9 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         QLineEdit *curEditor = static_cast<QLineEdit*> ( editor );
         GString prop = curEditor->text().toStdString();
         model->setData ( index, prop.c_str(), Qt::EditRole );
-        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        EditorApp::Editor.notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
-        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+        EditorApp::Editor.notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
     case eType_Double:
@@ -278,9 +279,9 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         QDoubleSpinBox *curEditor = static_cast<QDoubleSpinBox*> ( editor );
         double prop = ( double ) curEditor->value();
         model->setData ( index, prop, Qt::EditRole );
-        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        EditorApp::Editor.notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
-        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+        EditorApp::Editor.notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
     case eType_Float:
@@ -288,9 +289,9 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         QDoubleSpinBox *curEditor = static_cast<QDoubleSpinBox*> ( editor );
         float prop = ( float ) curEditor->value();
         model->setData ( index, prop, Qt::EditRole );
-        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        EditorApp::Editor.notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
-        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+        EditorApp::Editor.notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
     case eType_Enum:
@@ -300,9 +301,9 @@ void EPropertySheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel 
         CXPropEnum* pEnum = ( CXPropEnum* ) propBase;
         int prop = pEnum->getValue ( idx );
         model->setData ( index, curEditor->currentText(), Qt::EditRole );
-        EditorMgr->notifyPropertyChange ( propVar->mPtr, &prop );
+        EditorApp::Editor.notifyPropertyChange ( propVar->mPtr, &prop );
         dCast ( propVar->mPtr, prop );
-        EditorMgr->notifyPropertyChangeEnd ( propVar->mPtr );
+        EditorApp::Editor.notifyPropertyChangeEnd ( propVar->mPtr );
     }
     break;
     }

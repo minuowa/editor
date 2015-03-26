@@ -18,16 +18,14 @@ void initCodeSetting();
 int main ( int argc, char *argv[] )
 {
     EditorApp* app = new EditorApp ( argc, argv );
-	app->setGameUpdate ( FiGameDemo_Update );
-	app->setGameShutDown ( FiGameDemo_ShutDown );
 
     initCodeSetting();
 
     Editor* editor = new Editor();
     HWND sceneWindowHandle = ( HWND ) editor->getScenePanel()->winId();
-    FiGameDemo_Init ( sceneWindowHandle );
+    Content::Game.init ( sceneWindowHandle );
 
-    CXASSERT_RETURN_FALSE ( EditorMgr->init ( editor ) );
+    CXASSERT_RETURN_FALSE ( EditorApp::Editor.init ( editor ) );
 
     editor->show();
     app->exec();
@@ -37,7 +35,6 @@ int main ( int argc, char *argv[] )
     delete app;
     app = 0;
 
-	CXSingleton<EEditorManager>::destoryInstance();
 
     //FiGameDemo(w.GetScenePanel()->winId(),psheet);
 

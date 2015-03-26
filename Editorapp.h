@@ -3,7 +3,6 @@
 
 #include <QApplication>
 #include "EEditorManager.h"
-#include "FiGameDemo.h"
 
 extern "C"
 {
@@ -18,29 +17,11 @@ class EditorApp : public QApplication
     Q_OBJECT
 
 public:
+	static EEditorManager Editor;
     EditorApp ( int &argc, char **argv, int = ApplicationFlags );
     ~EditorApp();
+	bool updateGame();
 private:
-    Game_Update mBackUpdate;
-    Game_ShutDown mBackShutDown;
-
-public:
-    void setGameUpdate ( Game_Update update )
-    {
-        mBackUpdate = update;
-    }
-    void setGameShutDown ( Game_ShutDown shutdown )
-    {
-        mBackShutDown = shutdown;
-    }
-	bool updateGame()
-    {
-        if ( mBackUpdate )
-        {
-            return mBackUpdate();
-        }
-		return false;
-    }
 };
 
 #endif // EDITORAPP_H

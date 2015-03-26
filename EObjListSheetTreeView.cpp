@@ -8,6 +8,7 @@
 #include "qkeysequence.h"
 #include "EEditorManager.h"
 #include "EObjectListSheet.h"
+#include "Editorapp.h"
 
 EObjListSheetTreeView::EObjListSheetTreeView ( QWidget *parent/* = 0*/ )
     : QTreeView ( parent )
@@ -53,7 +54,7 @@ bool EObjListSheetTreeView::event ( QEvent* event )
     {
     case QEvent::ContextMenu:
     {
-        QString obj = EditorMgr->getSelectObj();
+        QString obj = EditorApp::Editor.getSelectObj();
         if ( !obj.isEmpty() )
         {
             QContextMenuEvent* menuEvent = ( QContextMenuEvent* ) event;
@@ -68,18 +69,28 @@ bool EObjListSheetTreeView::event ( QEvent* event )
 
 void EObjListSheetTreeView::deleteObj()
 {
-    QString selObj = EditorMgr->getSelectObj();
+    QString selObj = EditorApp::Editor.getSelectObj();
     if ( !selObj.isEmpty() )
     {
-        TheSceneMgr->deleteObj ( selObj.toStdString().c_str() );
-        EditorMgr->clearSelect();
-        EditorMgr->updatePropertySheet();
+         Content::Scene.deleteObj ( selObj.toStdString().c_str() );
+        EditorApp::Editor.clearSelect();
+        EditorApp::Editor.updatePropertySheet();
     }
 }
 
-void EObjListSheetTreeView::initComponentMenu ( const CharStringArr& componentTypeArr )
+void EObjListSheetTreeView::initComponentMenu (   )
 {
     /** @brief add obj **/
+	CharStringArr componentTypeArr;
+	typedef GComponentFactory::ComponentCreatorMap ComponentCreatorMap;
+	const ComponentCreatorMap& nodeCreatorMap =
+		Content::ComponentFactory.getCreators();
+	ComponentCreatorMap::const_iterator walk = nodeCreatorMap.begin();
+	ComponentCreatorMap::const_iterator end = nodeCreatorMap.end();
+	for ( ; walk != end; ++walk )
+	{
+		componentTypeArr.push_back ( walk->first.c_str() );
+	}
 
     CharStringArr::const_iterator it ( componentTypeArr.begin() );
     CharStringArr::const_iterator iend ( componentTypeArr.end() );
@@ -96,9 +107,9 @@ void EObjListSheetTreeView::initComponentMenu ( const CharStringArr& componentTy
 void EObjListSheetTreeView::onComponentAction ( QAction* action )
 {
     QString componentTypeName = action->text();
-    const QString& name = EditorMgr->getSelectObj();
+    const QString& name = EditorApp::Editor.getSelectObj();
 
-    GNode* node = TheSceneMgr->getObj ( name.toStdString().c_str() );
+    GNode* node =  Content::Scene.getObj ( name.toStdString().c_str() );
     CXASSERT ( node );
     if ( action->isChecked() )
     {
@@ -112,8 +123,8 @@ void EObjListSheetTreeView::onComponentAction ( QAction* action )
 
 void EObjListSheetTreeView::updateMenus()
 {
-    QString name = EditorMgr->getSelectObj();
-    GNode* target = TheSceneMgr->getObj ( name.toStdString().c_str() );
+    QString name = EditorApp::Editor.getSelectObj();
+    GNode* target =  Content::Scene.getObj ( name.toStdString().c_str() );
     CXASSERT ( target );
 
     resetComponentMenuState();
@@ -161,8 +172,17 @@ void EObjListSheetTreeView::resetComponentMenuState()
     }
 }
 
-void EObjListSheetTreeView::initObjectMenu ( const CharStringArr& gameobjTypeArr )
+void EObjListSheetTreeView::initObjectMenu (  )
 {
+	CharStringArr gameobjTypeArr;
+	typedef GFactory<GNode>::ObjCreatorMap GNodeCreatorMap;
+	const GNodeCreatorMap& nodeCreatorMap = Content::GameObjFactory.getCreators();
+	GNodeCreatorMap::const_iterator walk = nodeCreatorMap.begin();
+	GNodeCreatorMap::const_iterator end = nodeCreatorMap.end();
+	for ( ; walk != end; ++walk )
+	{
+		gameobjTypeArr.push_back ( walk->first.c_str() );
+	}
     QMenu* menu = mObjectMenu->addMenu ( "Add" );
     CharStringArr::const_iterator it ( gameobjTypeArr.begin() );
     CharStringArr::const_iterator iend ( gameobjTypeArr.end() );
@@ -178,5 +198,5 @@ void EObjListSheetTreeView::initObjectMenu ( const CharStringArr& gameobjTypeArr
 void EObjListSheetTreeView::onAddObjectAction ( QAction* action )
 {
     QString typeName = action->text();
-    EditorMgr->getObjectListSheet()->addChildByType ( typeName.toStdString().c_str() );
+    EditorApp::Editor.getObjectListSheet()->addChildByType ( typeName.toStdString().c_str() );
 }

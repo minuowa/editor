@@ -32,13 +32,13 @@ void EFilmSheetDelegate::setModelData ( QWidget *editor, QAbstractItemModel *mod
         lineEdit->setText ( var.toString() );
         return;
     }
-    if ( nullptr != FilmPlayer->getFrame ( lineEdit->text().toStdString().c_str() ) )
+    if ( nullptr !=  Content::FilmPlayer.getFrame ( lineEdit->text().toStdString().c_str() ) )
     {
         return;
     }
     else
     {
-        FilmPlayer->renameFrame ( var.toString().toStdString().c_str()
+         Content::FilmPlayer.renameFrame ( var.toString().toStdString().c_str()
                                   , lineEdit->text().toStdString().c_str() );
         standModel->setData ( index, QVariant ( lineEdit->text() ) );
     }
